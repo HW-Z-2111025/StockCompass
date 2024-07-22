@@ -1,29 +1,205 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title></title>
-		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
-	</head>
-	<body>
-		<div id="app">
-			{{num}}
-		</div>
-	
-		<script type="text/javascript">
-			new Vue({
-				el: "#app",
-				data: {
-					num: 0
-				},
-				methods: {
-					
-				},
-				mounted() {
-					
-				}
-			})
-		</script>
-	</body>
+
+<head>
+    <meta charset="utf-8" />
+    <title>股海指南针</title>
+    <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #app {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, #4e54c8, #8f94fb);
+            color: white;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+        }
+
+        .nav-link:hover {
+            color: #f0f2f5 !important;
+        }
+
+        .content {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        .news, .stock, .analysis {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .news h2, .stock h2, .analysis h2 {
+            color: #4e54c8;
+            border-bottom: 2px solid #4e54c8;
+            padding-bottom: 10px;
+        }
+
+        .news ul, .stock ul, .analysis ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .news li, .stock li, .analysis li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .news li:last-child, .stock li:last-child, .analysis li:last-child {
+            border-bottom: none;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .nav-item .fa-user {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="#">股海指南针</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">首页 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">新闻</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">行情</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">分析</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">关于我们</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">注册</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <img src="avatar_placeholder.png" alt="头像" class="avatar">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- 主内容 -->
+        <div class="content">
+            <div class="news">
+                <h2><i class="fas fa-newspaper"></i> 最新新闻</h2>
+                <ul>
+                    <li v-for="news in newsList">{{ news }}</li>
+                </ul>
+            </div>
+
+            <div class="stock">
+                <h2><i class="fas fa-chart-line"></i> 股票行情</h2>
+                <ul>
+                    <li v-for="stock in stockList">{{ stock }}</li>
+                </ul>
+            </div>
+
+            <div class="analysis">
+                <h2><i class="fas fa-chart-pie"></i> 市场分析</h2>
+                <ul>
+                    <li v-for="analysis in analysisList">{{ analysis }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                newsList: ['新闻1', '新闻2', '新闻3'],
+                stockList: ['股票1: 100元', '股票2: 200元', '股票3: 300元'],
+                analysisList: ['分析1', '分析2', '分析3']
+            },
+            methods: {
+                fetchNews() {
+                    // 在此处添加获取新闻的逻辑
+                    axios.get('/api/news')
+                        .then(response => {
+                            this.newsList = response.data;
+                        })
+                        .catch(error => {
+                            console.error('获取新闻失败：', error);
+                        });
+                },
+                fetchStocks() {
+                    // 在此处添加获取股票行情的逻辑
+                    axios.get('/api/stocks')
+                        .then(response => {
+                            this.stockList = response.data;
+                        })
+                        .catch(error => {
+                            console.error('获取股票行情失败：', error);
+                        });
+                },
+                fetchAnalysis() {
+                    // 在此处添加获取市场分析的逻辑
+                    axios.get('/api/analysis')
+                        .then(response => {
+                            this.analysisList = response.data;
+                        })
+                        .catch(error => {
+                            console.error('获取市场分析失败：', error);
+                        });
+                }
+            },
+            mounted() {
+                // this.fetchNews();
+                // this.fetchStocks();
+                // this.fetchAnalysis();
+            }
+        })
+    </script>
+</body>
+
 </html>
