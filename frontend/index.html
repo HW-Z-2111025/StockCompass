@@ -3,22 +3,27 @@
 	<head>
 		<meta charset="utf-8" />
 		<title></title>
-		<!-- <script src="https://unpkg.com/vue@next"></script> -->
-		<script src="js/v3.2.8/vue.global.prod.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<div id="app">
-			{{ counter }}
+			{{num}}
 		</div>
-		<script>
-			const App = {
-				data() {
-					return {
-						counter: 0
-					}
+	
+		<script type="text/javascript">
+			new Vue({
+				el: "#app",
+				data: {
+					num: 0
+				},
+				methods: {
+					
+				},
+				mounted() {
+					
 				}
-			};
-			Vue.createApp(App).mount('#app');
+			})
 		</script>
 	</body>
 </html>
