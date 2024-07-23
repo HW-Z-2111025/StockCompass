@@ -1,251 +1,214 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>用户注册</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- 引入ElementUI -->
-	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-	
-    <link rel="stylesheet" href="./css/base.css">
-    <link rel="stylesheet" href="./css/index.css">
-    <style>
-        body {
-            background-color: #e0e0e0;
-            color: #333;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            margin: 0;
-            padding-top: 15vh; /* 调整 padding-top */
-        }
+	<head>
+		<meta charset="utf-8" />
+		<title>用户注册</title>
 
-       .header {
-            position: fixed;
-            width: 100%;
-            top: 0;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- 引入ElementUI -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-        .wrapped {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo h1 a {
-            text-decoration: none;
-            color: #333;
-        }
-
-        .nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .nav ul li {
-            margin-left: 20px;
-        }
-
-        .nav ul li a {
-            text-decoration: none;
-            color: #333;
-        }
-
-        .sear input {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .user a {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            color: #333;
-        }
-
-        .user img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        #app {
-            width: 60vw;
-            min-width: 300px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 1s ease-in-out;
-            text-align: center;
-        }
-
-        #loginform {
-            width: 100%;
-            text-align: left;
-        }
-
-        .form-control {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            color: #333;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            color: #333;
-        }
-
-        .btn-primary {
-            background-color: #00a4ff;
-            border: none;
-            border-radius: 20px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            background-color: #00008b;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-    </style>
-</head>
-<body>
-	<div class="header">
-	    <div class="wrapped">
-	        <div class="logo">
-	            <h1><a href="#">股海指南针</a></h1>
-	        </div>
-	        <div class="nav">
-	            <ul>
-	                <li><a href="#">首页</a></li>
-	                <li><a href="#">资讯中心</a></li>
-	                <li><a href="#">行情中心</a></li>
-	                <li><a href="#">数据中心</a></li>
-	                <li><a href="#">个人中心</a></li>
-	            </ul>
-	        </div>
-	        <div class="sear">
-	            <input type="text" placeholder="输入关键词">
-	            <span></span>
-	        </div>
-	        <div class="user">
-	            <a href="#">
-	                <img src="./uploads/user.png" alt="">
-	                <span>12345</span>
-	            </a>
-	        </div>
-	    </div>
-	</div>
-	
-	<div id="app">
-		<h1>用户注册</h1>
-		<br />
-		<form id="loginform" @submit.prevent="register">
-			<div class="form-group">
-				<label for="exampleInputEmail1">邮箱</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" v-model="email" aria-describedby="emailHelp" required>
-			</div>
-			<div class="form-group">
-				<label for="exampleInputUsername1">用户名</label>
-				<input type="text" class="form-control" id="exampleInputUsername1" v-model="username" aria-describedby="usernameHelp" required>
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">密码</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" v-model="password" required>
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword2">确认密码</label>
-				<input type="password" class="form-control" id="exampleInputPassword2" v-model="confirmPassword" required>
-			</div>
-			<button type="submit" class="btn btn-primary btn-block">注册</button>
-		</form>
-	</div>
-
-	<script type="text/javascript">
-		new Vue({
-			el: "#app",
-			data: {
-				email: '',
-				username: '',
-				password: '',
-				confirmPassword: ''
-			},
-			methods: {
-				register() {
-					if (this.password !== this.confirmPassword) {
-						this.$message({
-							message: '两次输入的密码不一致',
-							type: 'warning'
-						});
-						return;
-					}
-					if (this.email.trim() === '' || this.username.trim() === '' || this.password.trim() === '' || this.confirmPassword.trim() === '') {
-						this.$message({
-							message: '输入内容不完整',
-							type: 'warning'
-						});
-						return;
-					}
-					if (this.email.includes(' ') || this.username.includes(' ') || this.password.includes(' ') || this.confirmPassword.includes(' ')) {
-						this.$message({
-							message: '输入内容不能包含空格',
-							type: 'warning'
-						});
-						return;
-					}
-
-					let userData = new FormData()
-					userData.append("username", this.username)
-					userData.append("password", this.password)
-					userData.append("email", this.email)
-
-					axios.post('http://127.0.0.1:81/register', userData)
-						.then(response => {
-							console.log(response.data)
-							if (response.data == -2) {
-								this.$message.error('该邮箱已被注册');
-							} else if (response.data == -1) {
-								this.$message.error('该用户名已被注册');
-							} else if (response.data == 0) {
-								this.$message.error('向数据库插入数据失败');
-							} else if (response.data == 1) {
-								this.$message({
-									message: '注册成功',
-									type: 'success'
-								});
-							}
-						})
-						.catch(error => {
-							console.error('注册请求错误：', error);
-							alert('注册请求错误，请稍后重试');
-						});
-				}
+		<link rel="stylesheet" href="./css/base.css">
+		<link rel="stylesheet" href="./css/index.css">
+		<style>
+			#app {
+				max-width: 100vw;
+				width: 100vw;
+				height: 100vh;
+				padding: 0px;
 			}
-		});
-	</script>
-</body>
+
+			#container {
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+			}
+
+			#header {
+				background-color: white;
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+				padding: 0px;
+			}
+
+			#headerrow {
+
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+			}
+
+			#headerrow .el-col {
+				height: 100%;
+				display: flex;
+				/* 使用 Flexbox */
+				align-items: center;
+				/* 垂直居中对齐 */
+				justify-content: center;
+				/* 水平居中对齐 */
+			}
+			.user-avatar {
+			    height: 40px;
+			    width: 40px;
+			    border-radius: 50%;
+			    overflow: hidden;
+			    margin-left: 15px;
+			}
+			
+			.user-avatar img {
+			    height: 100%;
+			    width: auto;
+			}
+
+			#main {
+				display: flex;
+				/* 使用 Flexbox */
+				justify-content: center;
+				/* 水平居中对齐 */
+			}
+
+			#mainblock {
+				height: 70%;
+				width: 60%;
+				padding: 10px;
+
+				background: rgba(255, 255, 255, 0.9);
+				border-radius: 15px;
+				padding: 20px;
+				box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+				animation: fadeIn 1s ease-in-out;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app" class="container">
+			<el-container id="container">
+				<el-header id="header">
+					<el-row id="headerrow">
+						<el-col :span="3">
+							<img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
+						</el-col>
+						<el-col :span="12" style="justify-content: left;">
+							<el-menu id="menu" :default-active="1" class="el-menu-demo" mode="horizontal">
+								<el-menu-item index="1">首页</el-menu-item>
+								<el-menu-item index="2">资讯中心</el-menu-item>
+								<el-menu-item index="3">行情中心</el-menu-item>
+								<el-menu-item index="4">数据中心</el-menu-item>
+							</el-menu>
+						</el-col>
+						<el-col :span="5">
+							<el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
+						</el-col>
+						<el-col :span="4">
+							<el-button type="text">登陆</el-button>
+							<el-button type="primary">注册</el-button>
+							<div class="user-avatar">
+							    <img src="./images/user-avatar.png" alt="用户头像">
+							</div>
+						</el-col>
+					</el-row>
+				</el-header>
+				<el-main id="main">
+					<div id="mainblock">
+						<h1>用户注册</h1>
+						<br />
+						<form id="loginform" @submit.prevent="register" style="text-align: left;">
+							<div class="form-group">
+								<label for="exampleInputEmail1">邮箱</label>
+								<input type="email" class="form-control" id="exampleInputEmail1" v-model="email"
+									aria-describedby="emailHelp" required>
+							</div>
+							<div class="form-group">
+								<label for="exampleInputUsername1">用户名</label>
+								<input type="text" class="form-control" id="exampleInputUsername1" v-model="username"
+									aria-describedby="usernameHelp" required>
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">密码</label>
+								<input type="password" class="form-control" id="exampleInputPassword1"
+									v-model="password" required>
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword2">确认密码</label>
+								<input type="password" class="form-control" id="exampleInputPassword2"
+									v-model="confirmPassword" required>
+							</div>
+							<button type="submit" class="btn btn-primary btn-block">注册</button>
+						</form>
+					</div>
+				</el-main>
+			</el-container>
+		</div>
+
+		<script type="text/javascript">
+			new Vue({
+				el: "#app",
+				data: {
+					email: '',
+					username: '',
+					password: '',
+					confirmPassword: ''
+				},
+				methods: {
+					register() {
+						if (this.password !== this.confirmPassword) {
+							this.$message({
+								message: '两次输入的密码不一致',
+								type: 'warning'
+							});
+							return;
+						}
+						if (this.email.trim() === '' || this.username.trim() === '' || this.password.trim() === '' ||
+							this.confirmPassword.trim() === '') {
+							this.$message({
+								message: '输入内容不完整',
+								type: 'warning'
+							});
+							return;
+						}
+						if (this.email.includes(' ') || this.username.includes(' ') || this.password.includes(' ') ||
+							this.confirmPassword.includes(' ')) {
+							this.$message({
+								message: '输入内容不能包含空格',
+								type: 'warning'
+							});
+							return;
+						}
+
+						let userData = new FormData()
+						userData.append("username", this.username)
+						userData.append("password", this.password)
+						userData.append("email", this.email)
+
+						axios.post('http://127.0.0.1:81/register', userData)
+							.then(response => {
+								console.log(response.data)
+								if (response.data == -2) {
+									this.$message.error('该邮箱已被注册');
+								} else if (response.data == -1) {
+									this.$message.error('该用户名已被注册');
+								} else if (response.data == 0) {
+									this.$message.error('向数据库插入数据失败');
+								} else if (response.data == 1) {
+									this.$message({
+										message: '注册成功',
+										type: 'success'
+									});
+								}
+							})
+							.catch(error => {
+								console.error('注册请求错误：', error);
+								alert('注册请求错误，请稍后重试');
+							});
+					}
+				}
+			});
+		</script>
+	</body>
 </html>
