@@ -123,10 +123,18 @@
                         <el-button type="primary" @click="navigateToRegister">注册</el-button>
                     </template>
                     <template v-else>
-                        <span>欢迎, {{ username }}</span>
-                        <div class="user-avatar">
-                            <img src="./images/user-avatar.png" alt="用户头像">
-                        </div>
+						欢迎, <a href="userinfo.html">{{ username }}</a>
+                        <el-dropdown @command="handleCommand">
+                            <span class="el-dropdown-link">
+                                <div class="user-avatar">
+                                    <img src="./images/user-avatar.png" alt="用户头像">
+                                </div>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="user">用户信息</el-dropdown-item>
+                                <el-dropdown-item command="logout" style="color: red;">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </template>
                 </el-col>
             </el-row>
@@ -213,14 +221,25 @@
                         } else if (page === 'data') {
                             window.location.href = 'data.html';
                         } else {
-							window.location.href = 'index.html';
-						}
+                            window.location.href = 'index.html';
+                        }
                     } else {
-						if(page === 'home'){
-							window.location.href = 'index.html';
-						} else {
-							window.location.href = 'login.html';
-						}
+                        if(page === 'home'){
+                            window.location.href = 'index.html';
+                        } else {
+                            window.location.href = 'login.html';
+                        }
+                    }
+                },
+                handleCommand(command) {
+                    if (command === 'user') {
+                        window.location.href = 'userinfo.html'; // 修改为实际用户信息页面路径
+                    } else if (command === 'logout') {
+                        sessionStorage.removeItem('username');
+                        sessionStorage.removeItem('loggedIn');
+                        this.username = '';
+                        this.loggedIn = false;
+                        window.location.reload(); // 刷新页面
                     }
                 }
             },
