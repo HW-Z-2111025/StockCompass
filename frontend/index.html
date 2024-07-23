@@ -15,43 +15,42 @@
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/index.css">
     <style>
-		#app {
-			max-width: 100vw;
-			width: 100vw;
-			height: 100vh;
-			padding: 0px;
-		}
-		
-		#container {
-			max-width: 100%;
-			width: 100%;
-			height: 100%;
-		}
-		
-		#header {
-			background-color: white;
-			max-width: 100%;
-			width: 100%;
-			height: 100%;
-			padding: 0px;
-		}
-		
-		#headerrow {
-		
-			max-width: 100%;
-			width: 100%;
-			height: 100%;
-		}
-		
-		#headerrow .el-col {
-			height: 100%;
-			display: flex;
-			/* 使用 Flexbox */
-			align-items: center;
-			/* 垂直居中对齐 */
-			justify-content: center;
-			/* 水平居中对齐 */
-		}
+        #app {
+            max-width: 100vw;
+            width: 100vw;
+            height: 100vh;
+            padding: 0px;
+        }
+
+        #container {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        #header {
+            background-color: white;
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+        }
+
+        #headerrow {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        #headerrow .el-col {
+            height: 100%;
+            display: flex;
+            /* 使用 Flexbox */
+            align-items: center;
+            /* 垂直居中对齐 */
+            justify-content: center;
+            /* 水平居中对齐 */
+        }
 
         .user-avatar {
             height: 40px;
@@ -100,31 +99,38 @@
 </head>
 <body>
     <div id="app">
-       <el-header id="header">
-       	<el-row id="headerrow">
-       		<el-col :span="3">
-       			<img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
-       		</el-col>
-       		<el-col :span="12" style="justify-content: left;">
-       			<el-menu id="menu" :default-active="1" class="el-menu-demo" mode="horizontal">
-       				<el-menu-item index="1">首页</el-menu-item>
-       				<el-menu-item index="2">资讯中心</el-menu-item>
-       				<el-menu-item index="3">行情中心</el-menu-item>
-       				<el-menu-item index="4">数据中心</el-menu-item>
-       			</el-menu>
-       		</el-col>
-       		<el-col :span="5">
-       			<el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
-       		</el-col>
-       		<el-col :span="4">
-       			<el-button type="text">登陆</el-button>
-       			<el-button type="primary">注册</el-button>
-       			<div class="user-avatar">
-       			    <img src="./images/user-avatar.png" alt="用户头像">
-       			</div>
-       		</el-col>
-       	</el-row>
-       </el-header>
+        <el-header id="header">
+            <el-row id="headerrow">
+                <el-col :span="3">
+                    <a href="index.html" style="height: 100%;">
+                        <img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
+                    </a>
+                </el-col>
+                <el-col :span="12" style="justify-content: left;">
+                    <el-menu id="menu" class="el-menu-demo" mode="horizontal">
+                        <el-menu-item index="1" @click="navigateToPage('home')">首页</el-menu-item>
+                        <el-menu-item index="2" @click="navigateToPage('news')">资讯中心</el-menu-item>
+                        <el-menu-item index="3" @click="navigateToPage('market')">行情中心</el-menu-item>
+                        <el-menu-item index="4" @click="navigateToPage('data')">数据中心</el-menu-item>
+                    </el-menu>
+                </el-col>
+                <el-col :span="5">
+                    <el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <template v-if="!loggedIn">
+                        <el-button type="text" @click="navigateToLogin">登录</el-button>
+                        <el-button type="primary" @click="navigateToRegister">注册</el-button>
+                    </template>
+                    <template v-else>
+                        <span>欢迎, {{ username }}</span>
+                        <div class="user-avatar">
+                            <img src="./images/user-avatar.png" alt="用户头像">
+                        </div>
+                    </template>
+                </el-col>
+            </el-row>
+        </el-header>
         <el-main id="main">
             <div class="hero">
                 <h1>股海指南针</h1>
@@ -132,7 +138,8 @@
             </div>
             <div class="section">
                 <h2>平台介绍</h2>
-                <p>“股海指南针——一站式股票投资信息平台”是一个面向广大投资者的专业级金融信息解决方案，旨在通过整合市场资讯、实时行情、深度数据及个性化服务，为用户提供全面、精准的投资决策支持。平台设计遵循高效与易用原则，确保用户能够迅速获取关键市场信息，优化资产配置策略。</p>
+                <p>“股海指南针——一站式股票投资信息平台”是一个面向广大投资者的专业级金融信息解决方案，旨在通过整合市场资讯、实时行情、深度数据及个性化服务，为用户提供全面、精准的投资决策支持。平台设计遵循高效与易用原则，确保用户能够迅速获取关键市场信息，优化资产配置策略。
+                </p>
             </div>
             <div class="section">
                 <h2>核心功能</h2>
@@ -144,42 +151,42 @@
                     5. <strong>用户系统：</strong>采用安全便捷的登录与注册流程，支持用户个性化设置。
                 </p>
             </div>
-			<!-- 底部 -->
-			    <div class="bottom">
-			        <div class="wrapped">
-			            <div class="left">
-			                <img src="./images/logo.png" alt="">
-			                <p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
-			                <input type="button" value="下载APP">
-			            </div>
-			            <div class="right">
-			                <dl>
-			                    <dt>关于股海指南针</dt>
-			                    <dd>关于</dd>
-			                    <dd>工作机会</dd>
-			                    <dd>管理团队</dd>
-			                    <dd>客户服务</dd>
-			                    <dd>帮助</dd>
-			                </dl>
-			                <dl>
-			                    <dt>关于股海指南针</dt>
-			                    <dd>关于</dd>
-			                    <dd>工作机会</dd>
-			                    <dd>管理团队</dd>
-			                    <dd>客户服务</dd>
-			                    <dd>帮助</dd>
-			                </dl>
-			                <dl>
-			                    <dt>关于股和指南针</dt>
-			                    <dd>关于</dd>
-			                    <dd>工作机会</dd>
-			                    <dd>管理团队</dd>
-			                    <dd>客户服务</dd>
-			                    <dd>帮助</dd>
-			                </dl>
-			            </div>
-			        </div>
-			    </div>
+            <!-- 底部 -->
+            <div class="bottom">
+                <div class="wrapped">
+                    <div class="left">
+                        <img src="./images/logo.png" alt="">
+                        <p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
+                        <input type="button" value="下载APP">
+                    </div>
+                    <div class="right">
+                        <dl>
+                            <dt>关于股海指南针</dt>
+                            <dd>关于</dd>
+                            <dd>工作机会</dd>
+                            <dd>管理团队</dd>
+                            <dd>客户服务</dd>
+                            <dd>帮助</dd>
+                        </dl>
+                        <dl>
+                            <dt>关于股海指南针</dt>
+                            <dd>关于</dd>
+                            <dd>工作机会</dd>
+                            <dd>管理团队</dd>
+                            <dd>客户服务</dd>
+                            <dd>帮助</dd>
+                        </dl>
+                        <dl>
+                            <dt>关于股和指南针</dt>
+                            <dd>关于</dd>
+                            <dd>工作机会</dd>
+                            <dd>管理团队</dd>
+                            <dd>客户服务</dd>
+                            <dd>帮助</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
         </el-main>
     </div>
 
@@ -187,11 +194,44 @@
         new Vue({
             el: "#app",
             data: {
-                activeIndex: '1' // Set default active menu item
+                username: '',
+                loggedIn: false
             },
             methods: {
-                handleSelect(index) {
-                    console.log(`Selected menu item: ${index}`);
+                navigateToLogin() {
+                    window.location.href = 'login.html'; // 修改为实际登录页面路径
+                },
+                navigateToRegister() {
+                    window.location.href = 'register.html'; // 修改为实际注册页面路径
+                },
+                navigateToPage(page) {
+                    if (this.loggedIn) {
+                        if (page === 'news') {
+                            window.location.href = 'news.html';
+                        } else if (page === 'market') {
+                            window.location.href = 'market.html';
+                        } else if (page === 'data') {
+                            window.location.href = 'data.html';
+                        } else {
+							window.location.href = 'index.html';
+						}
+                    } else {
+						if(page === 'home'){
+							window.location.href = 'index.html';
+						} else {
+							window.location.href = 'login.html';
+						}
+                    }
+                }
+            },
+            created() {
+                this.username = sessionStorage.getItem('username');
+                this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
+
+                // 处理登录状态
+                if (this.loggedIn) {
+                    console.log(`用户 ${this.username} 已登录`);
+                    // 在此处添加登录成功后的逻辑
                 }
             }
         });
