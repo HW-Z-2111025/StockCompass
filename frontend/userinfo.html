@@ -104,7 +104,8 @@
 				font-size: 20px;
 				font-weight: bold;
 			}
-			#drawer{
+
+			#drawer {
 				padding: 20px;
 			}
 		</style>
@@ -139,7 +140,7 @@
 							<el-dropdown @command="handleCommand">
 								<span class="el-dropdown-link">
 									<div class="user-avatar">
-										<img src="./images/user-avatar.png" alt="用户头像">
+										<img :src="header" alt="用户头像">
 									</div>
 								</span>
 								<el-dropdown-menu slot="dropdown">
@@ -154,7 +155,16 @@
 			<el-main id="main">
 				<div class="container">
 					<div class="user-info">
-						<img src="./images/user-avatar.png" alt="用户头像">
+						<img :src="header" alt="用户头像" @click="dialogVisible = true">
+						<!-- 弹出框 -->
+						<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+							<label for="exampleFormControlFile1">Example file input</label>
+							<input type="file" class="form-control-file" id="file">
+							<span slot="footer" class="dialog-footer">
+								<el-button @click="dialogVisible = false">取 消</el-button>
+								<el-button type="primary" @click="uploadImg">确 定</el-button>
+							</span>
+						</el-dialog>
 						<div>
 							<h2>{{ username }}</h2>
 							<p>邮箱：{{ email }}</p>
@@ -166,7 +176,7 @@
 			</el-main>
 			<!-- 侧边栏 -->
 			<el-drawer :visible.sync="drawerVisible" direction="rtl" size="30%" :before-close="handleClose">
-				<div class="drawer-content" id="drawer" >
+				<div class="drawer-content" id="drawer">
 					<h3>编辑个人信息</h3>
 					<el-form :model="form" ref="form" label-width="120px">
 						<el-form-item label="用户名">
@@ -190,8 +200,12 @@
 				data: {
 					username: '',
 					email: '',
+					header: '',
 					loggedIn: false,
+					
 					drawerVisible: false,
+					dialogVisible: false,
+					
 					form: {
 						username: '',
 						email: ''
@@ -228,34 +242,35 @@
 							window.location.href = 'userinfo.html'; // 修改为实际用户信息页面路径
 						} else if (command === 'logout') {
 							sessionStorage.removeItem('username');
-							sessionStorage.removeItem('loggedIn');
-							sessionStorage.removeItem('password');
 							sessionStorage.removeItem('email');
+							sessionStorage.removeItem('password');
+							sessionStorage.removeItem('header');
+							sessionStorage.removeItem('loggedIn');
 							this.username = '';
+							this.email = '';
+							this.header = '';
 							this.loggedIn = false;
 							window.location.href = 'index.html';
 						}
 					},
+					
+					//抽屉
 					showDrawer() {
 						this.drawerVisible = true;
 						// 设置表单内容
 						this.form.username = this.username;
+						this.form.email = this.email;
 					},
 					handleClose() {
 						this.drawerVisible = false;
 					},
 					saveChanges() {
-						// 在此处理保存操作，例如发送请求到服务器
-						console.log('保存的用户名:', this.form.username);
-						console.log('保存的邮箱:', this.form.email);
-						
 						let userData = new FormData()
 						userData.append("username", this.username)
 						userData.append("newname", this.form.username)
 						userData.append("newemail", this.form.email)
 						userData.append("password", sessionStorage.getItem('password'))
 						let pass = sessionStorage.getItem('password')
-						console.log(this.form.email)
 						//向后端发送请求，更新数据库
 						axios.post('http://127.0.0.1:81/changeUserInfo', userData)
 							.then(response => {
@@ -274,14 +289,12 @@
 									this.drawerVisible = false;
 									setTimeout(() => {
 										sessionStorage.removeItem('username');
-										sessionStorage.removeItem('loggedIn');
-										sessionStorage.removeItem('password');
+										sessionStorage.removeItem('header');
 										sessionStorage.removeItem('email');
-										
+
 										sessionStorage.setItem('username', this.form.username);
-										sessionStorage.setItem('email',this.form.email);
-										sessionStorage.setItem('password',pass);
-										sessionStorage.setItem('loggedIn', 'true');
+										sessionStorage.setItem('email', this.form.email);
+										sessionStorage.setItem('header', this.form.username+".jpg");
 										window.location.reload()
 									}, 1000); // 1000 毫秒 = 1 秒
 								}
@@ -290,14 +303,52 @@
 								console.error('注册请求错误：', error);
 								alert('注册请求错误，请稍后重试');
 							});
+					},
+
+					//弹出框
+					handleClose(done) {
+						this.dialogVisible = false;
+					},
+					uploadImg() {
+						this.dialogVisible = false;
+
+						var file = document.getElementById("file").files[0];
+						let param = new FormData()
+						param.append("username", this.username)
+						param.append("password", sessionStorage.getItem("password"))
+						param.append("email",this.email)
+						param.append("file", file)
+						var config = {
+							headers: {
+								'Content-Type': 'multipart/form-data'
+							}
+						}
+						
+						console.log('debug')
+						axios.post("http://127.0.0.1:81/uploadImg", param, config)
+							.then(response => {
+								if(response.data == 1){
+									alert('成功')
+									sessionStorage.removeItem('header');
+									sessionStorage.setItem('header', this.username+".jpg")
+									window.location.reload()
+								}
+								else{
+									alert('失败')
+								}
+							})
 					}
+
 				},
 				created() {
 					console.log('进入用户信息页面')
 					this.username = sessionStorage.getItem('username');
-					this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
 					this.email = sessionStorage.getItem('email');
+					this.header = "http://127.0.0.1:81/" + sessionStorage.getItem('header')
+					if(sessionStorage.getItem('header')==null) this.header=''
+					this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
 					
+
 
 					// 处理登录状态
 					if (this.loggedIn) {

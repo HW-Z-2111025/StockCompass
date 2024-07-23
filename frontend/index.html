@@ -128,7 +128,7 @@
                         <el-dropdown @command="handleCommand">
                             <span class="el-dropdown-link">
                                 <div class="user-avatar">
-                                    <img src="./images/user-avatar.png" alt="用户头像">
+                                    <img :src="header" alt="用户头像">
                                 </div>
                             </span>
                             <el-dropdown-menu slot="dropdown">
@@ -204,6 +204,7 @@
             el: "#app",
             data: {
                 username: '',
+				header: '',
                 loggedIn: false
             },
             methods: {
@@ -241,6 +242,7 @@
 						sessionStorage.removeItem('password');
 						sessionStorage.removeItem('loggedIn');
                         this.username = '';
+						this.header = '';
                         this.loggedIn = false;
                         window.location.reload(); // 刷新页面
                     }
@@ -249,6 +251,8 @@
             created() {
 				console.log('进入主页面')
                 this.username = sessionStorage.getItem('username');
+				this.header = "http://127.0.0.1:81/" + sessionStorage.getItem('header')
+				if(sessionStorage.getItem('header')==null) this.header=''
                 this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
 
                 // 处理登录状态

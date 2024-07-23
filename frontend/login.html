@@ -168,6 +168,7 @@
 										sessionStorage.setItem('username', resData.user_username);
 										sessionStorage.setItem('email',resData.user_email);
 										sessionStorage.setItem('password',resData.user_password);
+										sessionStorage.setItem('header',resData.user_header);
 										sessionStorage.setItem('loggedIn', 'true');
 										window.location.href = 'index.html';
 									}, 1000); // 1000 毫秒 = 1 秒
