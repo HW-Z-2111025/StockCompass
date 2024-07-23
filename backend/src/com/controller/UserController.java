@@ -17,7 +17,7 @@ public class UserController {
     String pass = "admin";
     AbstractDaoImpl abstractDao = new AbstractDaoImpl(driver,url,user,pass);
 
-    public int login(String username, String password){
+    public Map login(String username, String password){
         Map user =  abstractDao.getMap("user","*","username=\""+username+"\" and password=\""+password+"\"");
 //        ResultTo resultTo = new ResultTo();
 //
@@ -35,10 +35,10 @@ public class UserController {
             user = abstractDao.getMap("user","*","email=\""+username+"\" and password=\""+password+"\"");
         }
         if(user!=null){
-            return 1;//登陆成功
+            return user;//登陆成功
         }
         else{
-            return 0;//登陆失败
+            return null;//登陆失败
         }
     }
     public int register(String username, String password, String email){
