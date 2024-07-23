@@ -1,34 +1,163 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>用户注册</title>
-	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/echarts.js" type="text/javascript" charset="utf-8"></script>
-	<!-- bootstrap -->
-	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
-	<style>
-		#app {
-			width: 100vw;
-			height: 100vh;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-		}
+    <meta charset="utf-8" />
+    <title>用户登陆</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+	
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <style>
+        body {
+            background-color: #e0e0e0;
+            color: #333;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 15vh; /* 调整 padding-top */
+        }
 
-		#loginform {
-			width: 60%;
-			height: 50%;
-		}
-	</style>
+       .header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .wrapped {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo h1 a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .nav ul li {
+            margin-left: 20px;
+        }
+
+        .nav ul li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .sear input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .user a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+
+        .user img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        #app {
+            width: 60vw;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+            text-align: center;
+        }
+
+        #loginform {
+            width: 100%;
+            text-align: left;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #00a4ff;
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #00008b;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
+	<div class="header">
+	    <div class="wrapped">
+	        <div class="logo">
+	            <h1><a href="#">股海指南针</a></h1>
+	        </div>
+	        <div class="nav">
+	            <ul>
+	                <li><a href="#">首页</a></li>
+	                <li><a href="#">资讯中心</a></li>
+	                <li><a href="#">行情中心</a></li>
+	                <li><a href="#">数据中心</a></li>
+	                <li><a href="#">个人中心</a></li>
+	            </ul>
+	        </div>
+	        <div class="sear">
+	            <input type="text" placeholder="输入关键词">
+	            <span></span>
+	        </div>
+	        <div class="user">
+	            <a href="#">
+	                <img src="./uploads/user.png" alt="">
+	                <span>12345</span>
+	            </a>
+	        </div>
+	    </div>
+	</div>
+	
 	<div id="app">
 		<h1>用户注册</h1>
 		<br />
@@ -49,7 +178,7 @@
 				<label for="exampleInputPassword2">确认密码</label>
 				<input type="password" class="form-control" id="exampleInputPassword2" v-model="confirmPassword">
 			</div>
-			<button type="submit" class="btn btn-primary">注册</button>
+			<button type="submit" class="btn btn-primary btn-block">注册</button>
 		</form>
 	</div>
 
