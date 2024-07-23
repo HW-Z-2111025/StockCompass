@@ -17,29 +17,24 @@ public class UserController {
     String pass = "admin";
     AbstractDaoImpl abstractDao = new AbstractDaoImpl(driver,url,user,pass);
 
-    public Map login(String username, String password){
+    public ResultTo login(String username, String password){
         Map user =  abstractDao.getMap("user","*","username=\""+username+"\" and password=\""+password+"\"");
-//        ResultTo resultTo = new ResultTo();
-//
-//        if(user==null) {
-//            resultTo.value = null;
-//            resultTo.msg = "登陆失败";
-//        }
-//        else{
-//            resultTo.value = user;
-//            resultTo.msg = "登陆成功";
-//        }
-//        return resultTo;
+        ResultTo resultTo = new ResultTo();
 
-        if(user==null){
+        if(user==null) {
             user = abstractDao.getMap("user","*","email=\""+username+"\" and password=\""+password+"\"");
-        }
-        if(user!=null){
-            return user;//登陆成功
+            resultTo.value = user;
+            if(user == null){
+                resultTo.msg = "登陆失败";
+            }else {
+                resultTo.msg = "登陆成功";
+            }
         }
         else{
-            return null;//登陆失败
+            resultTo.value = user;
+            resultTo.msg = "登陆成功";
         }
+        return resultTo;
     }
     public int register(String username, String password, String email){
 
@@ -62,6 +57,35 @@ public class UserController {
         else{
             return 0; //向数据库插入数据失败
         }
+    }
 
+    public boolean removeUser(String username) {
+        return abstractDao.delete("user","username='"+username+"'");
+    }
+    public int changeUserInfo(String username, String newname, String newemail, String password) {
+        if(abstractDao.delete("user","username='"+username+"'")){
+            Map<String,Object> map = new HashMap<>();
+            map.put("username",newname);
+            map.put("password",password);
+            map.put("email",newemail);
+
+            Map user =  abstractDao.getMap("user","*","email='"+newemail+"'");
+            if(user!=null){
+                return -2;//该邮箱已被注册
+            }
+            user = abstractDao.getMap("user","*","username='"+newname+"'");
+            if(user!=null){
+                return -1;//该用户名已被注册
+            }
+            if(abstractDao.insert("user",map)){
+                return 1; //注册成功
+            }
+            else{
+                return 0; //向数据库插入数据失败
+            }
+        }
+        else {
+            return -3;
+        }
     }
 }

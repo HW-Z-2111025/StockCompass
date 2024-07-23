@@ -1,241 +1,316 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>股海指南针</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>股海指南针</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- 引入ElementUI -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- 引入ElementUI -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-    <link rel="stylesheet" href="./css/base.css">
-    <link rel="stylesheet" href="./css/index.css">
-    <style>
-        #app {
-            max-width: 100vw;
-            width: 100vw;
-            height: 100vh;
-            padding: 0px;
-        }
+		<link rel="stylesheet" href="./css/base.css">
+		<link rel="stylesheet" href="./css/index.css">
+		<style>
+			#app {
+				max-width: 100vw;
+				width: 100vw;
+				height: 100vh;
+				padding: 0px;
+			}
 
-        #header {
-            background-color: white;
-            max-width: 100%;
-            width: 100%;
-            height: 100%;
-            padding: 0px;
-        }
+			#header {
+				background-color: white;
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+				padding: 0px;
+			}
 
-        #headerrow {
-            max-width: 100%;
-            width: 100%;
-            height: 100%;
-        }
+			#headerrow {
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+			}
 
-        #headerrow .el-col {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+			#headerrow .el-col {
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 
-        .user-avatar {
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-left: 15px;
-        }
+			.user-avatar {
+				height: 40px;
+				width: 40px;
+				border-radius: 50%;
+				overflow: hidden;
+				margin-left: 15px;
+			}
 
-        .user-avatar img {
-            height: 100%;
-            width: auto;
-        }
+			.user-avatar img {
+				height: 100%;
+				width: auto;
+			}
 
-        #main {
-            flex: 1;
-            padding: 20px;
-            background: #f4f6f9;
-        }
+			#main {
+				height: 100%;
+				flex: 1;
+				padding: 20px;
+				background: #f4f6f9;
+			}
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+			.user-info {
+				display: flex;
+				align-items: center;
+				background: #ffffff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
 
-        .user-info img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-right: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+			.user-info img {
+				width: 120px;
+				height: 120px;
+				border-radius: 50%;
+				margin-right: 20px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
 
-        .user-info h2 {
-            margin: 0;
-            color: #0044cc;
-            font-size: 28px;
-        }
+			.user-info h2 {
+				margin: 0;
+				color: #0044cc;
+				font-size: 28px;
+			}
 
-        .user-info p {
-            margin: 5px 0;
-            color: #666;
-            font-size: 18px;
-        }
+			.user-info p {
+				margin: 5px 0;
+				color: #666;
+				font-size: 18px;
+			}
 
-        .user-info button {
-            margin-top: 20px;
-        }
+			.user-info button {
+				margin-top: 20px;
+			}
 
-        .el-card {
-            margin-top: 20px;
-        }
+			.el-card {
+				margin-top: 20px;
+			}
 
-        .el-card__header {
-            font-size: 20px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div id="app">
-        <el-header id="header">
-            <el-row id="headerrow">
-                <el-col :span="3">
-                    <a href="index.html" style="height: 100%;">
-                        <img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
-                    </a>
-                </el-col>
-                <el-col :span="12" style="justify-content: left;">
-                    <el-menu id="menu" class="el-menu-demo" mode="horizontal">
-                        <el-menu-item index="1" @click="navigateToPage('home')">首页</el-menu-item>
-                        <el-menu-item index="2" @click="navigateToPage('news')">资讯中心</el-menu-item>
-                        <el-menu-item index="3" @click="navigateToPage('market')">行情中心</el-menu-item>
-                        <el-menu-item index="4" @click="navigateToPage('data')">数据中心</el-menu-item>
-                    </el-menu>
-                </el-col>
-                <el-col :span="5">
-                    <el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
-                </el-col>
-                <el-col :span="4">
-                    <template v-if="!loggedIn">
-                        <el-button type="text" @click="navigateToLogin">登录</el-button>
-                        <el-button type="primary" @click="navigateToRegister">注册</el-button>
-                    </template>
-                    <template v-else>
-                        欢迎, <a href="userinfo.html">{{ username }}</a>
-                        <el-dropdown @command="handleCommand">
-                            <span class="el-dropdown-link">
-                                <div class="user-avatar">
-                                    <img src="./images/user-avatar.png" alt="用户头像">
-                                </div>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="user">用户信息</el-dropdown-item>
-                                <el-dropdown-item command="logout" style="color: red;">退出登录</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </template>
-                </el-col>
-            </el-row>
-        </el-header>
-        <el-main id="main">
-            <div class="container">
-                <div class="user-info">
-                    <img src="./images/user-avatar.png" alt="用户头像">
-                    <div>
-                        <h2>{{ username }}</h2>
-                        <p>邮箱：{{ email }}</p>
-                        <el-button type="primary" @click="editProfile">编辑个人信息</el-button>
-						<el-button type="danger" @click="logout">退出登陆</el-button>
-                    </div>
-                </div>
-                
-            </div>
-        </el-main>
-    </div>
+			.el-card__header {
+				font-size: 20px;
+				font-weight: bold;
+			}
+			#drawer{
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<el-header id="header">
+				<el-row id="headerrow">
+					<el-col :span="3">
+						<a href="index.html" style="height: 100%;">
+							<img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
+						</a>
+					</el-col>
+					<el-col :span="12" style="justify-content: left;">
+						<el-menu id="menu" class="el-menu-demo" mode="horizontal">
+							<el-menu-item index="1" @click="navigateToPage('home')">首页</el-menu-item>
+							<el-menu-item index="2" @click="navigateToPage('news')">资讯中心</el-menu-item>
+							<el-menu-item index="3" @click="navigateToPage('market')">行情中心</el-menu-item>
+							<el-menu-item index="4" @click="navigateToPage('data')">数据中心</el-menu-item>
+						</el-menu>
+					</el-col>
+					<el-col :span="5">
+						<el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
+					</el-col>
+					<el-col :span="4">
+						<template v-if="!loggedIn">
+							<el-button type="text" @click="navigateToLogin">登录</el-button>
+							<el-button type="primary" @click="navigateToRegister">注册</el-button>
+						</template>
+						<template v-else>
+							欢迎, <a href="userinfo.html">{{ username }}</a>
+							<el-dropdown @command="handleCommand">
+								<span class="el-dropdown-link">
+									<div class="user-avatar">
+										<img src="./images/user-avatar.png" alt="用户头像">
+									</div>
+								</span>
+								<el-dropdown-menu slot="dropdown">
+									<el-dropdown-item command="user">用户信息</el-dropdown-item>
+									<el-dropdown-item command="logout" style="color: red;">退出登录</el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
+						</template>
+					</el-col>
+				</el-row>
+			</el-header>
+			<el-main id="main">
+				<div class="container">
+					<div class="user-info">
+						<img src="./images/user-avatar.png" alt="用户头像">
+						<div>
+							<h2>{{ username }}</h2>
+							<p>邮箱：{{ email }}</p>
+							<el-button type="primary" @click="showDrawer">编辑个人信息</el-button>
+						</div>
+					</div>
 
-    <script type="text/javascript">
-        new Vue({
-            el: "#app",
-            data: {
-                username: '',
-                email: '',
-                loggedIn: false
-            },
-            methods: {
-                navigateToLogin() {
-                    window.location.href = 'login.html'; // 修改为实际登录页面路径
-                },
-                navigateToRegister() {
-                    window.location.href = 'register.html'; // 修改为实际注册页面路径
-                },
-                navigateToPage(page) {
-                    if (this.loggedIn) {
-                        if (page === 'news') {
-                            window.location.href = 'news.html';
-                        } else if (page === 'market') {
-                            window.location.href = 'market.html';
-                        } else if (page === 'data') {
-                            window.location.href = 'data.html';
-                        } else {
-                            window.location.href = 'index.html';
-                        }
-                    } else {
-                        if(page === 'home'){
-                            window.location.href = 'index.html';
-                        } else {
-                            window.location.href = 'login.html';
-                        }
-                    }
-                },
-				logout(){
-					sessionStorage.removeItem('username');
-					sessionStorage.removeItem('loggedIn');
-					this.username = '';
-					this.loggedIn = false;
-					window.location.href = 'index.html';
+				</div>
+			</el-main>
+			<!-- 侧边栏 -->
+			<el-drawer :visible.sync="drawerVisible" direction="rtl" size="30%" :before-close="handleClose">
+				<div class="drawer-content" id="drawer" >
+					<h3>编辑个人信息</h3>
+					<el-form :model="form" ref="form" label-width="120px">
+						<el-form-item label="用户名">
+							<el-input v-model="form.username"></el-input>
+						</el-form-item>
+						<el-form-item label="邮箱">
+							<el-input v-model="form.email"></el-input>
+						</el-form-item>
+						<el-form-item>
+							<el-button type="primary" @click="saveChanges">保存</el-button>
+							<el-button @click="handleClose">取消</el-button>
+						</el-form-item>
+					</el-form>
+				</div>
+			</el-drawer>
+		</div>
+
+		<script type="text/javascript">
+			new Vue({
+				el: "#app",
+				data: {
+					username: '',
+					email: '',
+					loggedIn: false,
+					drawerVisible: false,
+					form: {
+						username: '',
+						email: ''
+					}
 				},
-                handleCommand(command) {
-                    if (command === 'user') {
-                        window.location.href = 'userinfo.html'; // 修改为实际用户信息页面路径
-                    } else if (command === 'logout') {
-                        sessionStorage.removeItem('username');
-                        sessionStorage.removeItem('loggedIn');
-                        this.username = '';
-                        this.loggedIn = false;
-                        window.location.href = 'index.html';
-                    }
-                },
-                editProfile() {
-                    window.location.href = 'edit-profile.html'; // 修改为实际的编辑个人信息页面路径
-                }
-            },
-            created() {
-				console.log('进入用户信息页面')
-                this.username = sessionStorage.getItem('username');
-                this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
-                this.email = sessionStorage.getItem('email');
+				methods: {
+					navigateToLogin() {
+						window.location.href = 'login.html'; // 修改为实际登录页面路径
+					},
+					navigateToRegister() {
+						window.location.href = 'register.html'; // 修改为实际注册页面路径
+					},
+					navigateToPage(page) {
+						if (this.loggedIn) {
+							if (page === 'news') {
+								window.location.href = 'news.html';
+							} else if (page === 'market') {
+								window.location.href = 'market.html';
+							} else if (page === 'data') {
+								window.location.href = 'data.html';
+							} else {
+								window.location.href = 'index.html';
+							}
+						} else {
+							if (page === 'home') {
+								window.location.href = 'index.html';
+							} else {
+								window.location.href = 'login.html';
+							}
+						}
+					},
+					handleCommand(command) {
+						if (command === 'user') {
+							window.location.href = 'userinfo.html'; // 修改为实际用户信息页面路径
+						} else if (command === 'logout') {
+							sessionStorage.removeItem('username');
+							sessionStorage.removeItem('loggedIn');
+							sessionStorage.removeItem('password');
+							sessionStorage.removeItem('email');
+							this.username = '';
+							this.loggedIn = false;
+							window.location.href = 'index.html';
+						}
+					},
+					showDrawer() {
+						this.drawerVisible = true;
+						// 设置表单内容
+						this.form.username = this.username;
+					},
+					handleClose() {
+						this.drawerVisible = false;
+					},
+					saveChanges() {
+						// 在此处理保存操作，例如发送请求到服务器
+						console.log('保存的用户名:', this.form.username);
+						console.log('保存的邮箱:', this.form.email);
+						
+						let userData = new FormData()
+						userData.append("username", this.username)
+						userData.append("newname", this.form.username)
+						userData.append("newemail", this.form.email)
+						userData.append("password", sessionStorage.getItem('password'))
+						let pass = sessionStorage.getItem('password')
+						console.log(this.form.email)
+						//向后端发送请求，更新数据库
+						axios.post('http://127.0.0.1:81/changeUserInfo', userData)
+							.then(response => {
+								console.log(response.data)
+								if (response.data == -2) {
+									this.$message.error('该邮箱已被注册');
+								} else if (response.data == -1) {
+									this.$message.error('该用户名已被注册');
+								} else if (response.data == 0) {
+									this.$message.error('向数据库插入数据失败');
+								} else if (response.data == 1) {
+									this.$message({
+										message: '注册成功',
+										type: 'success'
+									});
+									this.drawerVisible = false;
+									setTimeout(() => {
+										sessionStorage.removeItem('username');
+										sessionStorage.removeItem('loggedIn');
+										sessionStorage.removeItem('password');
+										sessionStorage.removeItem('email');
+										
+										sessionStorage.setItem('username', this.form.username);
+										sessionStorage.setItem('email',this.form.email);
+										sessionStorage.setItem('password',pass);
+										sessionStorage.setItem('loggedIn', 'true');
+										window.location.reload()
+									}, 1000); // 1000 毫秒 = 1 秒
+								}
+							})
+							.catch(error => {
+								console.error('注册请求错误：', error);
+								alert('注册请求错误，请稍后重试');
+							});
+					}
+				},
+				created() {
+					console.log('进入用户信息页面')
+					this.username = sessionStorage.getItem('username');
+					this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
+					this.email = sessionStorage.getItem('email');
+					
 
-                // 处理登录状态
-                if (this.loggedIn) {
-                	console.log('已登陆登录状态')
-                    console.log(`用户 ${this.username} 已登录`);
-                    // 在此处添加登录成功后的逻辑
-                	console.log(this.email)
-                } else {
-                	console.log('未登录状态')
-                }
-            }
-        });
-    </script>
-</body>
+					// 处理登录状态
+					if (this.loggedIn) {
+						console.log('已登陆登录状态')
+						console.log(`用户 ${this.username} 已登录`);
+						// 在此处添加登录成功后的逻辑
+					} else {
+						alert("您还没有登陆！")
+						window.location.href = 'index.html';
+						console.log('未登录状态')
+					}
+				}
+			});
+		</script>
+	</body>
 </html>

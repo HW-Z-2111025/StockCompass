@@ -204,7 +204,6 @@
             el: "#app",
             data: {
                 username: '',
-				email: '',
                 loggedIn: false
             },
             methods: {
@@ -238,7 +237,9 @@
                         window.location.href = 'userinfo.html'; // 修改为实际用户信息页面路径
                     } else if (command === 'logout') {
                         sessionStorage.removeItem('username');
-                        sessionStorage.removeItem('loggedIn');
+						sessionStorage.removeItem('email');
+						sessionStorage.removeItem('password');
+						sessionStorage.removeItem('loggedIn');
                         this.username = '';
                         this.loggedIn = false;
                         window.location.reload(); // 刷新页面
@@ -249,14 +250,12 @@
 				console.log('进入主页面')
                 this.username = sessionStorage.getItem('username');
                 this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
-				this.email = sessionStorage.getItem('email');
 
                 // 处理登录状态
                 if (this.loggedIn) {
 					console.log('已登陆登录状态')
                     console.log(`用户 ${this.username} 已登录`);
                     // 在此处添加登录成功后的逻辑
-					console.log(this.email)
                 } else {
 					console.log('未登录状态')
 				}

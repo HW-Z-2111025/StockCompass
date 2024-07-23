@@ -150,12 +150,14 @@
 						let userData = new FormData();
 						userData.append("username", this.username);
 						userData.append("password", this.password);
-
 						axios.post('http://127.0.0.1:81/login', userData)
 							.then(response => {
+								console.log('test')
+								let resultTo = response.data
+								let msg = resultTo.msg
 								console.log(response.data);
-								if (response.data != null) {
-									let resData = response.data
+								if (msg==='登录成功') {
+									let resData = resultTo.value.
 									this.$message({
 										message: '登陆成功',
 										type: 'success'
@@ -163,11 +165,12 @@
 									console.log(resData.user_password)
 									setTimeout(() => {
 										sessionStorage.setItem('username', resData.user_username);
-										sessionStorage.setItem('email', resData.user_email);
+										sessionStorage.setItem('email',resData.user_email);
+										sessionStorage.setItem('password',resData.user_password);
 										sessionStorage.setItem('loggedIn', 'true');
 										window.location.href = 'index.html';
 									}, 1000); // 1000 毫秒 = 1 秒
-								} else if (response.data == null) {
+								} else {
 									this.$message.error('登陆失败，用户名（或邮箱）或密码错误！');
 								}
 							})
