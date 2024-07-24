@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股海指南针</title>
+	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="./js/echarts.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/zixun.js"></script>
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <div class="wrapped">
+            <div class="logo">
+                <h1><a href="#">股海指南针</a></h1>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">资讯中心</a></li>
+                    <li><a href="#">行情中心</a></li>
+					<li><a href="#">数据中心</a></li>
+					<li><a href="#">个人中心</a></li>
+                </ul>
+            </div>
+            <div class="sear">
+                <input type="text" placeholder="输入关键词">
+                <span></span>
+            </div>
+            <div class="user">
+                <a href="#">
+                    <img src="./uploads/user.png" alt="">
+                    <span>12345</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+	 <div class="wrapped fl">
+		 <div class="ff wrapped">
+			 
+			<div id="max">
+				<div class="re">
+					<ul>
+						<li>
+							<img src="./images/zixun/1.png" alt="">
+							<a href="http://stock.10jqka.com.cn/20240723/c660046189.shtml"  target="_blank">以旧换新政策发力 上市公司抢抓机遇</a>
+						</li>
+						<li><img src="./images/zixun/2.png" alt="">
+						<a href="http://field.10jqka.com.cn/20240723/c660057948.shtml" target="_blank">国产折叠新机热销，苹果高端市场或再受冲击</a></li>
+						<li><img src="./images/zixun/3.png" alt="">
+						<a href="http://field.10jqka.com.cn/20240723/c660046190.shtml" target="_blank">市场竞争激烈 车企上半年业绩分化</a></li>
+						<li><img src="./images/zixun/4.png" alt="">
+						<a href="http://field.10jqka.com.cn/20240723/c660045328.shtml" target="_blank">多地推进医疗设备更新 产业链公司或迎增量红利</a></li>
+					</ul>
+				</div>
+			</div>
+
+			 
+			 
+			 <!-- 要闻 -->
+			 <div id="app">
+				 <div class="hd news">
+					 <h3>要闻</h3>
+					 <ul>
+						 <li @click="switchcate('hot')"><a href="#" data-target="hot">热门</a></li>
+						 <li @click="switchcate('invest')"><a href="#" data-target="invest">投资机会</a></li>
+						 <li @click="switchcate('finance')"><a href="#" data-target="finance">财经要闻</a></li>
+						 <li @click="switchcate('industry')"><a href="#" data-target="industry">产经新闻</a></li>
+						<li @click="switchcate('report')"><a href="#" data-target="report">研报精选</a></li>
+					 </ul>
+					 <a href="https://www.10jqka.com.cn/?spm=5176.28103460.0.0.297c3da2btcCKq###" class="more">查看全部</a>
+				 </div>
+				 
+				 <div v-for="(news, index) in current" :key="index"  class="zixun" >
+					 <a :href="news.news_link" target="_blank">
+					   <h5>{{ news.news_heading }}</h5>
+					   <p>{{ news.news_intro }}</p>
+					 </a>
+				 </div>
+			 </div>
+			 
+			 
+			<!-- 讨论区 -->
+			<div id="app2">
+				 <div class="hd discuss">
+					 <h3>讨论区</h3>
+					 <ul>
+						 <li @click="switchcate('hot2')"><a href="#" data-target="hot2">热门</a></li>
+						 <li @click="switchcate('famous')"><a href="#" data-target="famous">名家看市</a></li>
+						 <li @click="switchcate('stock')"><a href="#" data-target="stock">板块个股</a></li>
+					 </ul>
+					 <a href="https://xueqiu.com/?spm=5176.28103460.0.0.297c3da2btcCKq" class="more">查看全部</a>
+				 </div>
+				 
+				 <div v-for="(ds, index) in current" :key="index"  class="ds" >
+					 <a :href="ds.discuss_link" target="_blank">
+					   <h5>{{ ds.discuss_heading }}</h5>
+					   <p>{{ ds.discuss_intro }}</p>
+					 </a>
+				 </div>
+				 
+			 </div>
+		 </div>
+		 
+		 <div class="fr">
+		 <div id="bang1" @click="navigate()">
+			 <h3>涨幅排行榜</h3>
+					 <div class="rk rk0">
+		 				<span class="rank"></span> 
+		 				<span class="name">股票名称</span>
+		 				<span class="zhangfu">涨幅</span>
+					 </div>
+			<div v-for="(r, index) in rank" :key="index" class="rk">
+				<span :class="getRankColor(index + 1)" class="rank">{{index + 1}}</span> 
+				<span class="name">{{r.stock_gpname}}</span>
+				<span class="zhangfu">{{r.stock_zhangfu}}</span>
+			</div>
+		 </div>
+		 
+		 
+		 <div id="bang2" @click="navigate()">
+		 			 <h3>龙虎榜</h3>
+					 <div class="rk rk0">
+		 				<span class="rank"></span> 
+		 				<span class="name">股票名称</span>
+		 				<span class="zhangfu">涨幅</span>
+						<span class="volume">成交量</span>
+					 </div>
+		 			<div v-for="(r, index) in rank" :key="index" class="rk">
+		 				<span class="rank">·</span> 
+		 				<span class="name">{{r.stock_gpname}}</span>
+		 				<span class="zhangfu">{{r.stock_zhangfu}}</span>
+						<span class="volume">{{r.stock_volume}}</span>
+		 			</div>
+		 </div>
+		 </div>
+	 </div>
+
+
+    <!-- 底部 -->
+    <div class="bottom">
+        <div class="wrapped">
+            <div class="left">
+                <img src="./images/logo.png" alt="">
+                <p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
+                <input type="button" value="下载APP">
+            </div>
+            <div class="right">
+                <dl>
+                    <dt>关于股海指南针</dt>
+                    <dd>关于</dd>
+                    <dd>工作机会</dd>
+                    <dd>管理团队</dd>
+                    <dd>客户服务</dd>
+                    <dd>帮助</dd>
+                </dl>
+                <dl>
+                    <dt>关于股海指南针</dt>
+                    <dd>关于</dd>
+                    <dd>工作机会</dd>
+                    <dd>管理团队</dd>
+                    <dd>客户服务</dd>
+                    <dd>帮助</dd>
+                </dl>
+                <dl>
+                    <dt>关于股和指南针</dt>
+                    <dd>关于</dd>
+                    <dd>工作机会</dd>
+                    <dd>管理团队</dd>
+                    <dd>客户服务</dd>
+                    <dd>帮助</dd>
+                </dl>
+            </div>
+        </div>
+		
+    </div>
+	
+
+	<script type="text/javascript">
+		new Vue({
+			el:'#app',
+			data:{
+				hotnew:[],
+				financenew:[],
+				industrynew:[],
+				investnew:[],
+				reportnew:[],
+				newss:[],
+				showcate:'hot',
+				current:[]
+			},
+			created(){
+				this.fetchNews();
+				this.switchcate();
+			},
+			methods:{
+				fetchNews(){//这个暂时不是实时的，到时候更新多一点数据再copy一下函数就可以了
+					axios.get(`http://localhost:81/news?date=20240723&pagenow=1`)
+					.then(response=>{
+						this.newss=response.data;
+						let newList=response.data;
+						for(let i=0;i<newList.length;i++){
+							let tmp=newList[i]
+							if(tmp.news_session=="hot"){
+								this.hotnew.push(tmp)
+							}
+							else if(tmp.news_session=="finance"){
+								this.financenew.push(tmp)
+							}
+							else if(tmp.news_session=="industry"){
+								this.industrynew.push(tmp)
+							}
+							else if(tmp.news_session=="invest"){
+								this.investnew.push(tmp)
+							}
+							else if(tmp.news_session=="report"){
+								this.reportnew.push(tmp)
+							}
+						}
+						this.current=this.hotnew
+					})
+					.catch(error=>{
+						console.error('Error fetching news:', error);
+					});
+				},
+				switchcate(category){
+					this.showcate=category;
+					if(category=='hot'){this.current=this.hotnew;}
+					else if(category=='finance'){this.current=this.financenew;}
+					else if(category=='industry'){this.current=this.industrynew;}
+					else if(category=='invest'){this.current=this.investnew;}
+					else if(category=='report'){this.current=this.reportnew;}
+				}
+			}
+		});
+		
+		new Vue({
+			el:'#app2',
+			data:{
+				hot2:[],
+				famous:[],
+				stock:[],
+				showcate:'hot2',
+				current:[],
+				date:'0'
+			},
+			created(){
+				this.getCurrentDate();
+				this.fetchNews();
+				this.switchcate();
+			},
+			methods:{
+				getCurrentDate() {
+				  const currentDate = new Date(); // 获取当前日期
+				  const formattedDate = this.formatDate(currentDate); 
+				  this.date = formattedDate; 
+				  console.log(this.date)
+				},
+				formatDate(date) {//格式化日期
+				  const year = date.getFullYear(); 
+				  const month = ('0' + (date.getMonth() + 1)).slice(-2); 
+				  const day = ('0' + date.getDate()).slice(-2); 
+				  return `${year}${month}${day}`; 
+				},
+				fetchNews(){
+					axios.get(`http://localhost:81/discuss?date=${this.date}&pagenow=1`)//这个是实时的，可能会没有数据（需要更新数据）
+					.then(response=>{
+						let newList=response.data;
+						for(let i=0;i<newList.length;i++){
+							let tmp=newList[i]
+							if(tmp.discuss_session=="hot2"){
+								this.hot2.push(tmp)
+							}
+							else if(tmp.discuss_session=="famous"){
+								this.famous.push(tmp)
+							}
+							else if(tmp.discuss_session=="stock"){
+								this.stock.push(tmp)
+							}
+						}
+						this.current=this.hot2
+					})
+					.catch(error=>{
+						console.error('Error fetching news:', error);
+					});
+				},
+				switchcate(category){
+					this.showcate=category;
+					if(category=='hot2'){this.current=this.hot2;}
+					else if(category=='famous'){this.current=this.famous;}
+					else if(category=='stock'){this.current=this.stock;}
+				}
+			}
+		});
+		
+		new Vue({
+			el:'#bang1',
+			data:{
+				rank:[]
+			},
+			created(){
+				this.fetchrank();
+				// this.switchcate();
+			},
+			methods:{
+
+				fetchrank(){
+					axios.get(`http://localhost:81/stockorder?date=20190314`)//这里随便找了一天的数据（因为没有最新数据）
+					.then(response=>{
+						console.log('Rank Data:', response.data);
+						this.rank=response.data;
+					})
+					.catch(error=>{
+						console.error('Error fetching rank1:', error);
+					});
+				},
+				getRankColor(rank) {
+					// 根据排名返回不同的类名
+					if (rank === 1) {
+						return 'rank1';
+					} else if (rank === 2) {
+						return 'rank2';
+					} else if (rank === 3) {
+						return 'rank3';
+					} else {
+						return 'default-color';
+					}
+				},
+				navigate(){
+					window.location="#"//放数据中心的链接
+				}
+			}
+		});
+		
+		new Vue({
+			el:'#bang2',
+			data:{
+				rank:[]
+			},
+			created(){
+				this.fetchrank();
+			},
+			methods:{
+				fetchrank(){
+					axios.get(`http://localhost:81/longhu?date=20190320`)//这里随便找了一天的数据（没有最新数据）
+					.then(response=>{
+						console.log('Rank Data:', response.data);
+						this.rank=response.data;
+					})
+					.catch(error=>{
+						console.error('Error fetching rank1:', error);
+					});
+					
+					//这里调用的后端代码非常低效（要查很多次），因为在条件中使用"** in ('...')"时报错，所以用了麻烦的遍历方法，后续需要优化
+					axios.get(`http://localhost:81/longhu2?date=20190320`)//这里随便找了一天的数据
+					.then(response=>{
+						console.log('Rank2 Data:', response.data);
+						this.rank.concat(response.data);
+					})
+					.catch(error=>{
+						console.error('Error fetching rank1:', error);
+					});
+				},
+				navigate(){
+					window.location="#"//放数据中心的链接
+				}
+			}
+		});
+		
+	</script>
+</body>
+
+</html>
