@@ -157,8 +157,8 @@
 					<div class="user-info">
 						<img :src="header" alt="用户头像" @click="dialogVisible = true">
 						<!-- 弹出框 -->
-						<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-							<label for="exampleFormControlFile1">上传头像</label>
+						<el-dialog title="更改头像" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+							<label for="exampleFormControlFile1">上传图片</label>
 							<input type="file" class="form-control-file" id="file">
 							<span slot="footer" class="dialog-footer">
 								<el-button @click="dialogVisible = false">取 消</el-button>
@@ -169,7 +169,25 @@
 							<h2>{{ username }}</h2>
 							<p>邮箱：{{ email }}</p>
 							<el-button type="primary" @click="showDrawer">编辑个人信息</el-button>
+							<el-button type="warning" @click="dialogPassVisible = true">更改密码</el-button>
 						</div>
+						<!-- 更改密码弹出框 -->
+						<el-dialog title="更改密码" :visible.sync="dialogPassVisible">
+							<el-form :model="ruleForm" status-icon ref="ruleForm" label-width="100px"
+								class="demo-ruleForm">
+								<el-form-item label="密码" prop="pass">
+									<el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+								</el-form-item>
+								<el-form-item label="确认密码" prop="checkPass">
+									<el-input type="password" v-model="ruleForm.checkPass"
+										autocomplete="off"></el-input>
+								</el-form-item>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button @click="dialogPassVisible = false">取 消</el-button>
+								<el-button type="primary" @click="changePassword">确 定</el-button>
+							</div>
+						</el-dialog>
 					</div>
 
 				</div>
@@ -202,14 +220,20 @@
 					email: '',
 					header: '',
 					loggedIn: false,
-					
+
 					drawerVisible: false,
 					dialogVisible: false,
-					
+					dialogPassVisible: false,
+
 					form: {
 						username: '',
 						email: ''
+					},
+					ruleForm: {
+						pass: '',
+						checkPass: '',
 					}
+					
 				},
 				methods: {
 					//导航栏
@@ -222,7 +246,8 @@
 						window.location.href = 'register.html'; // 修改为实际注册页面路径
 					},
 					navigateToPage(page) {
-						console.log("curr: userinfo.html. func: navigateToPage(" + page + "). loggedIn = " + this.loggedIn)
+						console.log("curr: userinfo.html. func: navigateToPage(" + page + "). loggedIn = " + this
+							.loggedIn)
 						if (this.loggedIn) {
 							if (page === 'news') {
 								window.location.href = 'news.html';
@@ -258,7 +283,7 @@
 							window.location.href = 'index.html';
 						}
 					},
-					
+
 					//抽屉
 					showDrawer() {
 						console.log("curr: userinfo.html. func: showDrawer()")
@@ -301,10 +326,10 @@
 
 										sessionStorage.setItem('username', this.form.username);
 										sessionStorage.setItem('email', this.form.email);
-										
-										if(this.header!='./images/default.jpg') {
+
+										if (this.header != './images/default.jpg') {
 											sessionStorage.removeItem('header');
-											sessionStorage.setItem('header', this.form.username+".jpg");
+											sessionStorage.setItem('header', this.form.username + ".jpg");
 										}
 										window.location.reload()
 									}, 1000); // 1000 毫秒 = 1 秒
@@ -328,30 +353,69 @@
 						let param = new FormData()
 						param.append("username", this.username)
 						param.append("password", sessionStorage.getItem("password"))
-						param.append("email",this.email)
+						param.append("email", this.email)
 						param.append("file", file)
 						var config = {
 							headers: {
 								'Content-Type': 'multipart/form-data'
 							}
 						}
-						
+
 						axios.post("http://127.0.0.1:81/uploadImg", param, config)
 							.then(response => {
 								console.log(response.data)
-								if(response.data == 1){
+								if (response.data == 1) {
 									this.$message({
 										message: '更改成功',
 										type: 'success'
 									});
 									sessionStorage.removeItem('header');
-									sessionStorage.setItem('header', this.username+".jpg")
+									sessionStorage.setItem('header', this.username + ".jpg")
 									window.location.reload()
-								}
-								else{
+								} else {
 									alert('失败')
 								}
 							})
+					},
+
+					//更改密码
+					changePassword() {
+						console.log("curr: userinfo.html. func: changePassword()")
+						console.log(this.ruleForm.checkPass)
+						console.log(this.ruleForm.pass)
+						this.dialogPassVisible = false
+						
+						let userData = new FormData()
+						userData.append("username", this.username)
+						userData.append("newname", this.username)
+						userData.append("newemail", this.email)
+						userData.append("password", this.ruleForm.checkPass)
+						//向后端发送请求，更新数据库
+						axios.post('http://127.0.0.1:81/changeUserInfo', userData)
+							.then(response => {
+								console.log(response.data)
+								if (response.data == -2) {
+									this.$message.error('该邮箱已被注册');
+								} else if (response.data == -1) {
+									this.$message.error('该用户名已被注册');
+								} else if (response.data == 0) {
+									this.$message.error('向数据库插入数据失败');
+								} else if (response.data == 1) {
+									this.$message({
+										message: '更改成功',
+										type: 'success'
+									});
+									this.drawerVisible = false;
+									setTimeout(() => {
+										sessionStorage.removeItem('password')
+										sessionStorage.setItem('password', this.ruleForm.checkPass)
+										window.location.reload()
+									}, 1000); // 1000 毫秒 = 1 秒
+								}
+							})
+							.catch(error => {
+								alert('更新请求错误，请稍后重试');
+							});
 					}
 
 				},
@@ -359,15 +423,12 @@
 					console.log('进入用户信息页面')
 					this.username = sessionStorage.getItem('username');
 					this.email = sessionStorage.getItem('email');
-					if(sessionStorage.getItem('header')=='undefined') {
-						this.header='./images/default.jpg'
-					}
-					else {
+					if (sessionStorage.getItem('header') == 'undefined') {
+						this.header = './images/default.jpg'
+					} else {
 						this.header = "http://127.0.0.1:81/" + sessionStorage.getItem('header')
 					}
 					this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
-					
-
 
 					// 处理登录状态
 					if (this.loggedIn) {
