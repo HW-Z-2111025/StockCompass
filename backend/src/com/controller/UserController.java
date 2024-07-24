@@ -69,11 +69,21 @@ public class UserController {
     }
     public int changeUserInfo(String username, String newname, String newemail, String password, String header) {
         if(abstractDao.delete("user","username='"+username+"'")){
+            String path = this.getClass().getResource("/").getPath();
+            // 修正路径中的前置斜杠（如果有的话）
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            path = path.replace("/", File.separator) + "web" + File.separator;
+
+            Path sourcePath = Paths.get(path + username + ".jpg");
+            Path destinationPath = Paths.get(path + newname + ".jpg");
+
             Map<String,Object> map = new HashMap<>();
             map.put("username",newname);
             map.put("password",password);
             map.put("email",newemail);
-            map.put("header",newname+".jpg");
+            if (Files.exists(sourcePath)) map.put("header",newname+".jpg");
 
 
             Map user =  abstractDao.getMap("user","*","email='"+newemail+"'");
@@ -85,28 +95,14 @@ public class UserController {
                 return -1;//该用户名已被注册
             }
             if (abstractDao.insert("user", map)) {
-                String path = this.getClass().getResource("/").getPath();
-                // 修正路径中的前置斜杠（如果有的话）
-                if (path.startsWith("/")) {
-                    path = path.substring(1);
-                }
-                path = path.replace("/", File.separator) + "web" + File.separator;
-
-                Path sourcePath = Paths.get(path + username + ".jpg");
-                Path destinationPath = Paths.get(path + newname + ".jpg");
-
-                if(!sourcePath.equals(destinationPath)){
-                    try {
-                        Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("文件复制成功！");
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    try {
-                        Files.delete(sourcePath);
-                        System.out.println("文件删除成功！");
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
+                if (Files.exists(sourcePath)) {
+                    if(!sourcePath.equals(destinationPath)){
+                        try {
+                            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                            System.out.println("文件复制成功！");
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                 }
                 return 1; // 注册成功
