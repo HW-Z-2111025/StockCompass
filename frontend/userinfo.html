@@ -175,7 +175,7 @@
 				</div>
 			</el-main>
 			<!-- 侧边栏 -->
-			<el-drawer :visible.sync="drawerVisible" direction="rtl" size="30%" :before-close="handleClose">
+			<el-drawer :visible.sync="drawerVisible" direction="rtl" size="30%" :before-close="handleDrawerClose">
 				<div class="drawer-content" id="drawer">
 					<h3>编辑个人信息</h3>
 					<el-form :model="form" ref="form" label-width="120px">
@@ -187,7 +187,7 @@
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="saveChanges">保存</el-button>
-							<el-button @click="handleClose">取消</el-button>
+							<el-button @click="handleDrawerClose">取消</el-button>
 						</el-form-item>
 					</el-form>
 				</div>
@@ -267,8 +267,8 @@
 						this.form.username = this.username;
 						this.form.email = this.email;
 					},
-					handleClose() {
-						console.log("curr: userinfo.html. func: handleClose()")
+					handleDrawerClose() {
+						console.log("curr: userinfo.html. func: handleDrawerClose()")
 						this.drawerVisible = false;
 					},
 					saveChanges() {

@@ -68,6 +68,15 @@ public class UserController {
         return abstractDao.delete("user","username='"+username+"'");
     }
     public int changeUserInfo(String username, String newname, String newemail, String password, String header) {
+        Map user =  abstractDao.getMap("user","*","email='"+newemail+"'");
+        if(user!=null && !user.get("user_username").equals(username)){
+            return -2;//该邮箱已被注册
+        }
+        user = abstractDao.getMap("user","*","username='"+newname+"'");
+        if(user!=null && !user.get("user_username").equals(username)){
+            return -1;//该用户名已被注册
+        }
+
         if(abstractDao.delete("user","username='"+username+"'")){
             String path = this.getClass().getResource("/").getPath();
             // 修正路径中的前置斜杠（如果有的话）
@@ -85,15 +94,6 @@ public class UserController {
             map.put("email",newemail);
             if (Files.exists(sourcePath)) map.put("header",newname+".jpg");
 
-
-            Map user =  abstractDao.getMap("user","*","email='"+newemail+"'");
-            if(user!=null){
-                return -2;//该邮箱已被注册
-            }
-            user = abstractDao.getMap("user","*","username='"+newname+"'");
-            if(user!=null){
-                return -1;//该用户名已被注册
-            }
             if (abstractDao.insert("user", map)) {
                 if (Files.exists(sourcePath)) {
                     if(!sourcePath.equals(destinationPath)){
