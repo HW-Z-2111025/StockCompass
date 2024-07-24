@@ -158,7 +158,7 @@
 						<img :src="header" alt="用户头像" @click="dialogVisible = true">
 						<!-- 弹出框 -->
 						<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-							<label for="exampleFormControlFile1">Example file input</label>
+							<label for="exampleFormControlFile1">上传头像</label>
 							<input type="file" class="form-control-file" id="file">
 							<span slot="footer" class="dialog-footer">
 								<el-button @click="dialogVisible = false">取 消</el-button>
@@ -214,11 +214,11 @@
 				methods: {
 					//导航栏
 					navigateToLogin() {
-						console.log("curr: userinfo.html. func: navigateToLogin())
+						console.log("curr: userinfo.html. func: navigateToLogin()")
 						window.location.href = 'login.html'; // 修改为实际登录页面路径
 					},
 					navigateToRegister() {
-						console.log("curr: userinfo.html. func: navigateToRegister())
+						console.log("curr: userinfo.html. func: navigateToRegister()")
 						window.location.href = 'register.html'; // 修改为实际注册页面路径
 					},
 					navigateToPage(page) {
