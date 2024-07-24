@@ -344,8 +344,12 @@
 					console.log('进入用户信息页面')
 					this.username = sessionStorage.getItem('username');
 					this.email = sessionStorage.getItem('email');
-					this.header = "http://127.0.0.1:81/" + sessionStorage.getItem('header')
-					if(sessionStorage.getItem('header')==null) this.header=''
+					if(sessionStorage.getItem('header')=='undefined') {
+						this.header='./images/default.jpg'
+					}
+					else {
+						this.header = "http://127.0.0.1:81/" + sessionStorage.getItem('header')
+					}
 					this.loggedIn = sessionStorage.getItem('loggedIn') === 'true';
 					
 
