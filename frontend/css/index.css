@@ -54,7 +54,7 @@ body{
     margin-right: 24px;
 }
 
-.nav ul li:active,
+.nav ul li.active,
 .nav ul li:hover{
     border-bottom: 2px solid #00a4ff;
 }
