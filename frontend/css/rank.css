@@ -1,0 +1,80 @@
+.table-container {  
+    width: 75%;  
+    margin: 0 auto;  
+    overflow-x: auto; 
+	background-color: #fff;
+	 /* 添加边框 */
+	border-bottom: 35px solid #f3f5f7; /* 边框宽度为2px，颜色为黑色，样式为实线 */   
+	border-top: 10px solid #f3f5f7;
+	padding: 10px;
+	
+}  
+
+  
+.leaderboard {  
+    width: 95%; 
+    border-collapse: collapse;  
+    margin: 20px 15px;  
+}  
+  
+.leaderboard th,  
+ .leaderboard td {  
+    padding: 10px;  
+    text-align: left;  
+    border-bottom: 1px solid #ddd;  
+} 
+  
+.leaderboard th {  
+    background-color: #f2f2f2;  
+    color: #333;  
+}  
+
+.leaderboard1 {  
+    width: 100%; 
+    border-collapse: collapse;  
+    margin: 0px 0px;  
+}  
+  
+.leaderboard1 th,  
+ .leaderboard1 td {  
+    padding: 10px;  
+    text-align: left;  
+    border-bottom: 1px solid #ddd;  
+} 
+  
+.leaderboard1 th {  
+    background-color: #f2f2f2;  
+    color: #333;  
+}  
+
+
+.leaderboard tr:hover {  
+    background-color: #f9f9f9;  
+}  
+  
+ 
+
+
+.smalltitle{
+	border-bottom: 1px solid #ddd;  
+}
+.smalltitle h2.icon-lhb,
+.smalltitle .more {  
+    display: inline-block; /* 使得h2和a标签并排显示 */  
+    vertical-align: middle; /* 垂直居中对齐，可根据需要调整 */  
+}
+.smalltitle .more {  
+	float: right;
+    /* 左侧添加一些间距 */  
+}
+.smalltitle{
+	padding-left: 20px;
+}
+
+.tabletd{
+	color:#0091c9;
+}
+
+.zhangfu{
+	color: #db4a39;
+}
