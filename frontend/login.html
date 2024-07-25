@@ -173,7 +173,7 @@
 						let userData = new FormData();
 						userData.append("username", this.username);
 						userData.append("password", this.password);
-						axios.post('http://127.0.0.1:81/login',userDate)
+						axios.post('http://127.0.0.1:81/login',userData)
 							.then(response => {
 								
 								console.log(this.username);

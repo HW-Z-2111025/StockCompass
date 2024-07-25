@@ -84,6 +84,14 @@
 			background-image: url(./images/bgi.png);
 			background-size: cover;
         }
+		
+		/* Active menu item style */
+		.el-menu-demo .el-menu-item.active {
+			color: #409EFF;
+			/* Change to desired color for active item */
+			border-bottom: 2px solid #409EFF;
+			/* Optional: add underline */
+		}
 
         .hero h1{
             /* background: linear-gradient(135deg, #e0eaff, #c9d6f5);s */
@@ -197,12 +205,12 @@
 				<el-col :span="3"></el-col>
                 <el-col :span="3">
                     <a href="index.html" style="height: 100%;">
-                        <img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
+                        <img src="./images/logomain.png" alt="网站Logo" style="height: 100%;">
                     </a>
                 </el-col>
                 <el-col :span="12" style="justify-content: left;">
                     <el-menu id="menu" class="el-menu-demo" mode="horizontal">
-                        <el-menu-item index="1" @click="navigateToPage('home')">首页</el-menu-item>
+                        <el-menu-item index="1" class="active" @click="navigateToPage('home')">首页</el-menu-item>
                         <el-menu-item index="2" @click="navigateToPage('news')">资讯中心</el-menu-item>
                         <el-menu-item index="3" @click="navigateToPage('market')">行情中心</el-menu-item>
                         <el-menu-item index="4" @click="navigateToPage('data')">数据中心</el-menu-item>
@@ -217,7 +225,7 @@
                         <el-button type="primary" @click="navigateToRegister">注册</el-button>
                     </template>
                     <template v-else>
-						欢迎, <a href="userinfo.html">{{ username }}</a>
+						欢迎, <a href="userinfo.html" style="color: white;">{{ username }}</a>
                         <el-dropdown @command="handleCommand">
                             <span class="el-dropdown-link">
                                 <div class="user-avatar">
