@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>用户登陆</title>
-
+		<script src="./js/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -72,18 +72,34 @@
 				justify-content: center;
 				/* 水平居中对齐 */
 			}
+			
+			#main h1{
+				font-weight: 600;
+			}
+			
+			#main .form-control{
+				width: 80%;
+			}
+			
+			#main .form-group label{
+				width: 100px;
+			}
 
 			#mainblock {
 				height: 50%;
 				width: 60%;
 				padding: 10px;
 
-				background: rgba(255, 255, 255, 0.9);
-				border-radius: 15px;
+				/* background: rgba(255, 255, 255, 0.9); */
+				/* border-radius: 15px; */
 				padding: 20px;
-				box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+				/* box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); */
 				animation: fadeIn 1s ease-in-out;
 				text-align: center;
+			}
+			
+			.form-group{
+				padding: 10px 210px;
 			}
 		</style>
 	</head>
@@ -92,6 +108,7 @@
 			<el-container id="container">
 				<el-header id="header">
 					<el-row id="headerrow">
+						<el-col :span="3"></el-col>
 						<el-col :span="3">
 							<a href="index.html" style="height: 100%;">
 								<img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
@@ -117,7 +134,10 @@
 								<input type="password" class="form-control" id="exampleInputPassword1"
 									v-model="password" required>
 							</div>
-							<button type="submit" class="btn btn-primary btn-block">登录</button>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary btn-block" style="margin-left: 140px; width: 180px;border-radius: 0px;margin-top: 10px;">登录</button>
+								<button @click="navigateToRegister()" class="btn btn-primary btn-block" style="width: 180px;border-radius: 0px;margin-top: 10px; margin-left: 40px;">注册</button>
+							</div>
 						</form>
 					</div>
 				</el-main>
@@ -132,6 +152,9 @@
 					password: ''
 				},
 				methods: {
+					navigateToRegister() {
+					    window.location.href = 'register.html'; // 修改为实际注册页面路径
+					},
 					login() {
 						if (this.username.trim() === '' || this.password.trim() === '') {
 							this.$message({
@@ -150,9 +173,11 @@
 						let userData = new FormData();
 						userData.append("username", this.username);
 						userData.append("password", this.password);
-						axios.post('http://127.0.0.1:81/login', userData)
+						axios.post('http://127.0.0.1:81/login',userDate)
 							.then(response => {
-								console.log('test')
+								
+								console.log(this.username);
+								console.log(this.password);
 								let resultTo = response.data
 								let msg = resultTo.msg
 								console.log(response.data);

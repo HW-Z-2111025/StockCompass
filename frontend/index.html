@@ -3,14 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <title>股海指南针</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="./js/jquery.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+    <script src="./bootstrap/js/bootstrap.js"></script>
     <!-- 引入ElementUI -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+-->
 
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/index.css">
@@ -18,8 +23,10 @@
         #app {
             max-width: 100vw;
             width: 100vw;
-            height: 100vh;
+            /* height: 100vh; */
             padding: 0px;
+			background-color: #000;
+			color: #fff;
         }
 
         #container {
@@ -29,17 +36,21 @@
         }
 
         #header {
-            background-color: white;
+            
             max-width: 100%;
             width: 100%;
             height: 100%;
             padding: 0px;
+			/* background-color: rgba(255, 255, 255, 0.15); */
+			font-size: 18px;
         }
 
         #headerrow {
             max-width: 100%;
             width: 100%;
             height: 100%;
+			padding-left: 30px;
+			padding-right: 30px;
         }
 
         #headerrow .el-col {
@@ -68,40 +79,122 @@
 
         #main {
             flex: 1;
-            padding: 20px;
-            background: #f4f6f9;
+            padding: 0x;
+            /* background: #f4f6f9; */
+			background-image: url(./images/bgi.png);
+			background-size: cover;
         }
 
-        .hero {
-            background: linear-gradient(135deg, #e0eaff, #c9d6f5);
-            color: #333;
+        .hero h1{
+            /* background: linear-gradient(135deg, #e0eaff, #c9d6f5);s */
+            color: #fff;
             text-align: center;
             padding: 50px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+			margin-top: 650px;
+            /* border-radius: 8px; */
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            /* margin-bottom: 20px; */
+			font-size: 80px;
+			font-weight: bolder;
+			letter-spacing: 20px;
         }
+		
+		.hero p{
+			color: #fff;
+			text-align: center;
+			padding: 0px 20px;
+			margin-bottom: 0px;
+			font-size: 30px;
+			font-weight: 400;
+		}
 
         .section {
-            margin: 20px 0;
+            margin: 20px 30px;
+			/* width: 40%; */
+			padding: 50px 50px;
         }
 
         .section h2 {
-            color: #0044cc;
+            color: #fff;
             margin-bottom: 10px;
+			padding-left: 30px;
+			font-size: 30px;
+			font-weight: 600;
+			margin-bottom: 20px;
+			width: 100%;
         }
 
         .section p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #fff;
+			font-weight: 200;
         }
+		
+		.section p span {
+			font-weight: 400;
+		}
+		
+		#menu{
+			background-color: transparent;
+			border: 0px;
+		}
+		
+		.bigsession{
+			display: flex;
+			justify-content: space-evenly;
+			align-items: center;
+			margin: 0px 280px;
+			margin-bottom: 60px;
+			text-align: justify;
+		}
+		
+		.session1{
+			/* display: inline-block; */
+			width: 45%;
+			/* height: 450px; */
+			/* background: rgba(244, 244, 244, 0.1); */
+			padding: 30px 50px;
+			/* margin-bottom: 70px; */
+		}
+		
+		.session1 p{
+			margin-top: 30px;
+			padding-left: 0px;
+		}
+		
+		.session2{
+			width: 55%;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			/* border-left: 2px solid rgba(244, 244, 244, 0.1); */
+		}
+		
+		.session2 div{
+			width: 45%;
+			margin: 20px 0px;
+			padding: 30px 30px;
+			padding-top: 10px;
+			/* background: #6f6f6f; */
+			background: rgba(244, 244, 244, 0.1);
+			font-size: 16px;
+			font-weight: 300;
+		}
+		
+		.session2 div h5{
+			font-size: 23px;
+			font-weight: 600;
+			line-height: 1.8;
+			
+		}
     </style>
 </head>
 <body>
     <div id="app">
         <el-header id="header">
             <el-row id="headerrow">
+				<el-col :span="3"></el-col>
                 <el-col :span="3">
                     <a href="index.html" style="height: 100%;">
                         <img src="./images/logo.png" alt="网站Logo" style="height: 100%;">
@@ -115,9 +208,9 @@
                         <el-menu-item index="4" @click="navigateToPage('data')">数据中心</el-menu-item>
                     </el-menu>
                 </el-col>
-                <el-col :span="5">
-                    <el-input placeholder="搜索..." suffix-icon="el-icon-search"></el-input>
-                </el-col>
+                <!-- <el-col :span="5"> -->
+                    <!-- <el-input placeholder="搜索..." suffix-icon="el-icon-search" style="background-color: #6f6f6f;"></el-input> -->
+                <!-- </el-col> -->
                 <el-col :span="4">
                     <template v-if="!loggedIn">
                         <el-button type="text" @click="navigateToLogin">登录</el-button>
@@ -145,31 +238,32 @@
                 <h1>股海指南针</h1>
                 <p>一站式股票投资信息平台</p>
             </div>
-            <div class="section">
-                <h2>平台介绍</h2>
-                <p>“股海指南针——一站式股票投资信息平台”是一个面向广大投资者的专业级金融信息解决方案，旨在通过整合市场资讯、实时行情、深度数据及个性化服务，为用户提供全面、精准的投资决策支持。平台设计遵循高效与易用原则，确保用户能够迅速获取关键市场信息，优化资产配置策略。
-                </p>
-            </div>
-            <div class="section">
-                <h2>核心功能</h2>
-                <p>
-                    1. <strong>首页：</strong>主要由功能导航及网站介绍构成。<br>
-                    2. <strong>资讯中心：</strong>该模块呈现最新股市资讯与A股动态、覆盖全面的财经新闻。<br>
-                    3. <strong>行情中心：</strong>通过图表等方式输出数据，展示实时涨跌图表及个股分析。<br>
-                    4. <strong>数据中心：</strong>集中展示各类权威股票排名榜单，涵盖涨跌、成交量等多个维度，提供详实的交易数据统计，为投资者发掘市场热点、评估风险提供强有力的数据支撑。<br>
-                    5. <strong>用户系统：</strong>采用安全便捷的登录与注册流程，支持用户个性化设置。
-                </p>
-            </div>
+			<div class="bigsession">
+				<div class="section session1">
+					<h2>平台介绍</平台介绍></h2>
+					<p>“股海指南针——一站式股票投资信息平台”是一个面向广大投资者的专业级金融信息解决方案，旨在通过整合市场资讯、实时行情、深度数据及个性化服务，为用户提供全面、精准的投资决策支持。平台设计遵循高效与易用原则，确保用户能够迅速获取关键市场信息，优化资产配置策略。
+					</p>
+				</div>
+				<div class="section session2">
+					<!-- <h2>核心功能</核心功能></h2> -->
+					<div @click="navigateToPage('news')"><h5>资讯中心</h5>呈现最新股市资讯与A股动态、覆盖全面的财经新闻。</div> 
+					<div @click="navigateToPage('market')"><h5>行情中心</h5>通过图表等方式输出数据，展示实时涨跌图表及个股分析。</div> 
+					<div @click="navigateToPage('data')"><h5>数据中心</h5>集中展示各类权威股票排名榜单，涵盖涨跌、成交量等多个维度。</div> 
+					<div @click="navigateToPage('user')"><h5>用户系统</h5>采用安全便捷的登录与注册流程，支持用户个性化设置。</div> 
+				</div>
+				
+			</div>
             <!-- 底部 -->
-            <div class="bottom">
+            <!-- <div class="bottom" style="background-color: rgba(255, 255, 255, 0.15);color: #dedede;">-->
+			<div class="bottom" style="background-color: transparent;border-top: 1px solid #323232;color: #dedede;">
                 <div class="wrapped">
                     <div class="left">
                         <img src="./images/logo.png" alt="">
                         <p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
-                        <input type="button" value="下载APP">
+                        <input type="button" value="下载APP" style="background-color: #000;border: 1px solid #6f6f6f;color: #6f6f6f;">
                     </div>
                     <div class="right">
-                        <dl>
+                        <dl style="color: #dedede;">
                             <dt>关于股海指南针</dt>
                             <dd>关于</dd>
                             <dd>工作机会</dd>
@@ -217,11 +311,13 @@
                 navigateToPage(page) {
                     if (this.loggedIn) {
                         if (page === 'news') {
-                            window.location.href = 'news.html';
+                            window.location.href = 'zixun.html';
                         } else if (page === 'market') {
-                            window.location.href = 'market.html';
+                            window.location.href = 'hang.html';
                         } else if (page === 'data') {
-                            window.location.href = 'data.html';
+                            window.location.href = 'rank.html';
+						}else if(page=='user'){
+							window.location.href='userinfo.html';
                         } else {
                             window.location.href = 'index.html';
                         }

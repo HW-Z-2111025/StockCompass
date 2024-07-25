@@ -1,344 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>股海指南针</title>
-	<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="./base.css">
-    <link rel="stylesheet" href="./index.css">
-	<link rel="stylesheet" href="./rank.css">
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>股海指南针</title>
+		<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="./css/base.css">
+		<link rel="stylesheet" href="./css/index.css">
+		<link rel="stylesheet" href="./css/rank.css">
+	</head>
 
-<body>
-    <!-- 头部 -->
-    <div class="header">
-        <div class="wrapped">
-            <div class="logo">
-                <h1><a href="#">股海指南针</a></h1>
-            </div>
-            <div class="nav">
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="#">资讯中心</a></li>
-                    <li><a href="#">行情中心</a></li>
-					<li class="active"><a href="rank.html">数据中心</a></li>
-					<li><a href="#">个人中心</a></li>
-                </ul>
-            </div>
-            <div class="sear">
-                <input type="text" placeholder="输入关键词">
-                <span></span>
-            </div>
-            <div class="user">
-                <a href="#">
-                    <img src="./uploads/user.png" alt="">
-                    <span>12345</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-<!-- 主要内容 -->
-
-	 <div class="wrapped" style="background-color: #f3f5f7;">
-		<div id="app">
-		 <div class="table-container"> 
-		  <div class="smalltitle">
-		      <h2 class="icon-lhb"><a href="http://data.10jqka.com.cn/market/longhu/" target="_blank">龙虎榜</a></h2>
-		      
-			  <a href="#" target="_blank" class="more">更多>></a>
-		  </div>
-		    <table class="leaderboard">
-		        <thead>
-		            <tr>
-		        		<th style="padding-right: 80px;"></th>
-		                <th></th>   
-		            </tr>  
-		        </thead>  
-		        <tbody>
-		            <tr>
-		        		<td style="padding: 4px 0px;background:#f1f5f6;">
-		        				<div class="name" style="text-align: center;">一类</div>
-		        		</td>
-		        		<td style="padding: 4px 0px;">
-							<div id="app1">
-		        				<table class="leaderboard1">
-									<thead>
-										<tr><th>序号</th>
-										<th>股票</th>
-										<th>价格振幅</th>
-										<th>最高价</th>
-										<th>最低价</th>
-										</tr>
-									</thead>
-		        				<tbody>
-		        				<tr v-for="(r, index) in rank" :key="index">
-		        				     <td >{{ index + 1 }}</td>  
-		        				     <td class="tabletd">{{ r.table_stock_gpName || '数据加载中...' }}</td>  
-		        				     <td class="zhangfu">{{(((r.table_stock_hiPrice-r.table_stock_lowPrice)/r.table_stock_lowPrice)*100)|number:2 }}<a class="zhangfu">%</a></td> <!-- 注意这里应该是成交量，而不是涨跌 -->   
-		        				     <td>{{r.table_stock_hiPrice}}</td> 
-									 <td>{{r.table_stock_lowPrice}}</td> 
-		        				   </tr>  
-		        		</tbody>
-		                </table>
-						</div>
-						</td>
-						</tr>
-						<!-- second -->
-						<tr>
-							<td style="padding: 4px 0px;background:#f1f5f6;">
-									<div class="name" style="text-align: center;">二类</div>
-							</td>
-							<td style="padding: 4px 0px;">
-								<div id="app4">
-									<table class="leaderboard1">
-										<thead>
-											<tr><th>序号</th>
-											<th>股票</th>
-											<th>涨幅累计</th>
-											<th>最高价</th>
-											<th>最低价</th>
-											</tr>
-										</thead>
-									<tbody>
-									 <tr v-for="(r, index) in rank" :key="index">
-									     <td >{{ index + 1 }}</td>  
-									     <td class="tabletd">{{ r.table_stock_gpName || '数据加载中...' }}</td>  
-									     <td class="zhangfu">{{sum[index]}}<a class="zhangfu">%</a></td>   
-									    <td>{{r.table_stock_highPrice}}</td> 
-										 <td>{{r.table_stock_lowPrice}}</td> 
-									   </tr>  
-							</tbody>
-						    </table>
-							</div>
-							</td>
-							</tr>
-				</tbody>  
-		    </table> 
-		 </div>
-		 
-		 <!-- 个股 -->
-		 <div class="table-container">
-		  <div class="smalltitle">
-		      <h2 class="icon-lhb"><a href="http://data.10jqka.com.cn/market/longhu/" target="_blank">领涨个股</a></h2>
-		      <a href="#" target="_blank" class="more">更多>></a>
-		  </div>
-		  <div id="app2">
-		     <table class="leaderboard">  
-		         <thead>  
-		             <tr>  
-		                 <th style="padding-right: 2px;">排名</th>  
-		                 <th style="padding-right: 50px;">股票</th>  
-		                 <th style="padding-right: 50px;">涨跌幅</th>  
-						 <th style="padding-right: 50px;">最高价</th>
-						 <th></th>
-		             </tr>  
-		         </thead>  
-		         <tbody>
-			
-		        <tr v-for="(r, index) in rank" :key="index">
-		             <td >{{ index + 1 }}</td>  
-		             <td class="tabletd">{{ r.table_stock_gpName || '数据加载中...' }}</td>  
-		             <td class="zhangfu">{{ r.table_stock_zhangfu }}<a class="zhangfu">%</a></td> <!-- 注意这里应该是成交量，而不是涨跌 -->   
-		             <td>{{r.table_stock_hiPrice}}</td> 
-				   </tr>  
-		             <!-- 更多行数据 -->  
-		         </tbody>  
-		     </table> 
-		</div>
-		  </div>
-		  
-		  
-		 <!-- 大宗交易 -->
-		  <div class="table-container">
-		  <div class="smalltitle">
-		      <h2 class="icon-lhb"><a  target="_blank">大宗交易</a></h2>
-			  <a>(成交量大于30万)</a>
-		      <a href="./more.html" target="_blank" class="more">更多>></a>
-		  </div><div id="app3">
-		  <table class="leaderboard">
-		      <thead>  
-		          <tr>  
-		              <th style="padding-right: 2px;">排名</th>  
-		              <th style="padding-right: 50px;">股票</th>  
-		              <th style="padding-right: 50px;">成交量</th>
-					  <th style="padding-right: 50px;">收盘价</th>  
-		  						 <th></th>
-		          </tr>  
-		      </thead> 
-			  <tbody>
-				   <tr v-for="(r, index) in rank" :key="index">  
-				        <td >{{ index + 1 }}</td>  
-				        <td class="tabletd">{{ r.table_stock_gpName || '数据加载中...' }}</td>  
-				        <td >{{ r.table_stock_volume }}</td> <!-- 注意这里应该是成交量，而不是涨跌 -->  
-				        <td >{{ r.table_stock_closePrice }}</td>  
-				      </tr>  
-			  </tbody>
-		   </table>
+	<body>
+		<!-- 头部 -->
+		<div class="header">
+			<div class="wrapped">
+				<div class="logo">
+					<h1><a href="#">股海指南针</a></h1>
+				</div>
+				<div class="nav">
+					<ul>
+						<li><a href="index.html">首页</a></li>
+						<li><a href="zixun.html">资讯中心</a></li>
+						<li><a href="hang.html">行情中心</a></li>
+						<li class="active"><a href="rank.html">数据中心</a></li>
+						<li><a href="#">个人中心</a></li>
+					</ul>
+				</div>
+				<div class="sear">
+					<input type="text" placeholder="输入关键词">
+					<span></span>
+				</div>
+				<div class="user">
+					<a href="#">
+						<img src="./uploads/user.png" alt="">
+						<span>12345</span>
+					</a>
+				</div>
 			</div>
-		</div> 
-	</div>
-</div>
+		</div>
+
+		<!-- 主要内容 -->
+
+		<div class="wrapped" style="background-color: #f3f5f7;">
+			<div id="app">
+				<div class="table-container">
+					<div class="smalltitle">
+						<h2 class="icon-lhb"><a href="http://data.10jqka.com.cn/market/longhu/" target="_blank">龙虎榜</a>
+						</h2>
+						<a href="https://data.10jqka.com.cn/market/longhu/" target="_blank" class="more">更多>></a>
+					</div>
+					<table class="leaderboard">
+						<thead>
+							<tr>
+								<th style="padding-right: 80px;"></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="padding: 4px 0px;background:#f1f5f6;">
+									<div class="name" style="text-align: center;color:#797c86;font-weight: bold;">一类</div>
+								</td>
+								<td style="padding: 4px 0px;">
+									<div id="app1">
+										<table class="leaderboard1">
+											<thead>
+												<tr>
+													<th></th>
+													<th>股票名称</th>
+													<th>价格振幅</th>
+													<th>最高价</th>
+													<th>最低价</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-for="(r, index) in rank" :key="index">
+													<td :class="getRankColor(index + 1)">{{ index + 1 }}</td>
+													<td class="tabletd">{{ r.gpname }}</td>
+													<td class="zhangfu">
+														{{(((r.highprice-r.lowprice)/r.lowprice)*100).toFixed(7)}}<a	class="zhangfu">%</a></td>
+													<td>{{r.highprice}}</td>
+													<td>{{r.lowprice}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+							<!-- second -->
+							<tr>
+								<td style="padding: 4px 0px;background:#f1f5f6;">
+									<div class="name" style="text-align: center;color:#797c86;font-weight: bold;">二类</div>
+								</td>
+								<td style="padding: 4px 0px;">
+									<div id="app4">
+										<table class="leaderboard1">
+											<thead>
+												<tr>
+													<th></th>
+													<th>股票名称</th>
+													<th>涨幅累计</th>
+													<th>最高价</th>
+													<th>最低价</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-for="(r, index) in rank" :key="index">
+													<td :class="getRankColor(index + 1)">{{ index + 1 }}</td>
+													<td class="tabletd">{{ r.gpname}}</td>
+													<td class="zhangfu">{{(sum[index]).toFixed(7)}}<a class="zhangfu">%</a></td>
+													<td>{{(r.highprice).toFixed(2)}}</td>
+													<td>{{(r.lowprice).toFixed(2)}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- 个股 -->
+				<div class="table-container">
+					<div class="smalltitle">
+						<h2 class="icon-lhb"><a href="http://data.10jqka.com.cn/market/longhu/" target="_blank">领涨个股</a>
+						</h2>
+						<a href="https://data.10jqka.com.cn/market/longhu/" target="_blank" class="more">更多>></a>
+					</div>
+					<div id="app2">
+						<table class="leaderboard">
+							<thead>
+								<tr>
+									<th></th>
+									<th>股票名称</th>
+									<th>涨跌幅</th>
+									<th>最高价</th>
+									<th>最低价</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr v-for="(r, index) in rank" :key="index">
+									<td>{{ index + 1 }}</td>
+									<td class="tabletd">{{ r.gpname }}</td>
+									<td class="zhangfu">{{ r.zhangfu }}<a class="zhangfu">%</a></td>
+									<!-- 注意这里应该是成交量，而不是涨跌 -->
+									<td>{{(r.highprice).toFixed(2)}}</td>
+									<td>{{(r.lowprice).toFixed(2)}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
 
-    <!-- 底部 -->
-    <div class="bottom">
-        <div class="wrapped">
-            <div class="left">
-                <img src="./images/logo.png" alt="">
-                <p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
-                <input type="button" value="下载APP">
-            </div>
-            <div class="right">
-                <dl>
-                    <dt>关于股海指南针</dt>
-                    <dd>关于</dd>
-                    <dd>工作机会</dd>
-                    <dd>管理团队</dd>
-                    <dd>客户服务</dd>
-                    <dd>帮助</dd>
-                </dl>
-                <dl>
-                    <dt>关于股海指南针</dt>
-                    <dd>关于</dd>
-                    <dd>工作机会</dd>
-                    <dd>管理团队</dd>
-                    <dd>客户服务</dd>
-                    <dd>帮助</dd>
-                </dl>
-                <dl>
-                    <dt>关于股和指南针</dt>
-                    <dd>关于</dd>
-                    <dd>工作机会</dd>
-                    <dd>管理团队</dd>
-                    <dd>客户服务</dd>
-                    <dd>帮助</dd>
-                </dl>
-            </div>
-        </div>
-    </div>
+				<!-- 大宗交易 -->
+				<div class="table-container">
+					<div class="smalltitle">
+						<h2 class="icon-lhb"><a href="https://data.10jqka.com.cn/market/longhu/" target="_blank">大宗交易</a></h2>
+						<a href="https://data.10jqka.com.cn/market/longhu/" target="_blank" class="more">更多>></a>
+					</div>
+					<div id="app3">
+						<table class="leaderboard">
+							<thead>
+								<tr>
+									<th></th>
+									<th>股票名称</th>
+									<th>成交量</th>
+									<th>开盘价</th>
+									<th>收盘价</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(r, index) in rank" :key="index">
+									<td>{{ index + 1 }}</td>
+									<td class="tabletd">{{ r.gpname}}</td>
+									<td>{{ r.volume }}</td>
+									<td>{{ (r.openprice).toFixed(2) }}</td>
+									<td>{{ (r.closeprice).toFixed(2) }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 
-	
-	<!-- method -->
- 	<script type="text/javascript">
-		new Vue({
-			el:"#app3",
-			data:{
-				rank:[]
-			},
-			created() {
-				this.output()
-			},
-			methods:{
-				output(){
-				    axios.get(`http://localhost/getleads`)
-				    .then(response => {
-							console.log('Rank Data:', response.data);
-							this.rank=response.data; 
-		 
-					})
-					.catch(error=>{
-								console.error('Error fetching rank1:', error);});
+
+		<!-- 底部 -->
+		<div class="bottom">
+			<div class="wrapped">
+				<div class="left">
+					<img src="./images/logo.png" alt="">
+					<p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
+					<input type="button" value="下载APP">
+				</div>
+				<div class="right">
+					<dl>
+						<dt>关于股海指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+					<dl>
+						<dt>关于股海指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+					<dl>
+						<dt>关于股和指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- method -->
+		<script type="text/javascript">
+			new Vue({
+				el: "#app3",
+				data: {
+					rank: []
+				},
+				created() {
+					this.output()
+				},
+				methods: {
+					output() {
+						axios.get(`http://localhost:81/getleads?date=20230320`)
+							.then(response => {
+								// console.log('Rank Data:', response.data);
+								this.rank = response.data;
+							})
+							.catch(error => {
+								console.error('Error fetching rank1:', error);
+							});
+					}
 				}
-			}
-		}),
-		new Vue({
-			el:"#app2",
-			data:{
-				rank:[]
-			},
-			created() {
-				this.output()
-			},
-			methods:{
-				output(){
-				    axios.get(`http://localhost/getrise`)
-				    .then(response => {
-							console.log('Rank Data:', response.data);
-							this.rank=response.data; 
-		 
-					})
-					.catch(error=>{
-								console.error('Error fetching rank1:', error);});
-				}
-			}
-		}),
-		new Vue({
-			el:"#app1",
-			data:{
-				rank:[]
-			},
-			created() {
-				this.output()
-			},
-			methods:{
-				output(){
-				    axios.get(`http://localhost/gethigh`)
-				    .then(response => {
-							console.log('Rank Data:', response.data);
-							this.rank=response.data; 
-		 
-					})
-					.catch(error=>{
-								console.error('Error fetching rank1:', error);});
-				}
-			}
-		}),
-		new Vue({
-			el:"#app4",
-			data:{
-				rank:[],
-				sum:[]
-			},
-			created() {
-				this.output()
-			},
-			methods:{
-				output(){
-				    axios.get(`http://localhost/getsum`)
-				    .then(response => {
-							console.log('Rank Data:', response.data);
-							// this.rank=response.data; 
-							let gpname=""
-							let tempname=""
-							let singlesum=0
-							let k=0
-							let jsonarr =  response.data
-							 for(let i=0;i<jsonarr.length;i++){
-								 let json =  jsonarr[i] 
-								 if(k==0){
-									 gpname=json.table_stock_gpName
-									 }
-								 tempname=json.table_stock_gpName
-								 singlesum=singlesum+parseFloat(json.table_stock_zhangfu)
-								 if(k<3&&tempname!=gpname){
-									 k=0
-									 singlesum=0
-									 continue
-								 }
-								 k=k+1
-								 if(k==3){
-									 this.rank.push({
-										       table_stock_gpName: json.table_stock_gpName,  
-										       table_stock_highPrice: parseFloat(json.table_stock_hiPrice),  
-										       table_stock_lowPrice: parseFloat(json.table_stock_lowPrice)  })
-									 this.sum.push(singlesum)
-									 singlesum=0
-								     k=0
-								 }
-								 
-								 
-		 }
-					})
-					.catch(error=>{
-								console.error('Error fetching rank1:', error);});
-				}
-			}
-		})
-	</script> 
-</body>
+			}),
+				new Vue({
+					el: "#app2",
+					data: {
+						rank: []
+					},
+					created() {
+						this.output()
+					},
+					methods: {
+						output() {
+							axios.get(`http://localhost:81/getrise?date=20190320`)
+								.then(response => {
+									// console.log('Rank Data:', response.data);
+									this.rank = response.data;
+								})
+								.catch(error => {
+									console.error('Error fetching rank1:', error);
+								});
+						}
+					}
+				}),
+				new Vue({
+					el: "#app1",
+					data: {
+						rank: []
+					},
+					created() {
+						this.output()
+					},
+					methods: {
+						output() {
+							axios.get(`http://localhost:81/gethigh?date=20220615`)
+								.then(response => {
+									// console.log('Rank Data:', response.data);
+									this.rank = response.data;
+								})
+								.catch(error => {
+									console.error('Error fetching rank1:', error);
+								});
+						},
+						getRankColor(rank) {
+							// 根据排名返回不同的类名
+							if (rank === 1) {
+								return 'rank1';
+							} else if (rank === 2) {
+								return 'rank2';
+							} else if (rank === 3) {
+								return 'rank3';
+							} else {
+								return 'default-color';
+							}
+						}
+					}
+				}),
+				new Vue({
+					el: "#app4",
+					data: {
+						rank: [],
+						sum: []
+					},
+					created() {
+						this.output()
+					},
+					methods: {
+						output() {
+							axios.get(`http://localhost:81/getsum?date=20190320`)
+								.then(response => {
+									// console.log('Rank Data:', response.data);
+									let gp = ""
+									let tempname = ""
+									let singlesum = 0
+									let k = 0
+									let jsonarr = response.data
+									for (let i = 0; i < jsonarr.length; i++) {
+										let json = jsonarr[i]
+										if (k == 0) {
+											gp = json.gpname
+										}
+										tempname = json.gpname
+										singlesum = singlesum + parseFloat(json.zhangfu)
+										if (k < 3 && tempname != gp) {
+											k = 0
+											singlesum = 0
+											continue
+										}
+										k = k + 1
+										if (k == 3) {
+											this.rank.push({
+												gpname: json.gpname,
+												highprice: parseFloat(json.highprice),
+												lowprice: parseFloat(json.lowprice)
+											})
+											this.sum.push(singlesum)
+											singlesum = 0
+											k = 0
+										}
+									}
+									console.log('Rank Data:', this.rank);
+									console.log('Sum Data:', this.sum);
+								})
+								.catch(error => {
+									console.error('Error fetching rank1:', error);
+								});
+						},
+						getRankColor(rank) {
+							// 根据排名返回不同的类名
+							if (rank === 1) {
+								return 'rank1';
+							} else if (rank === 2) {
+								return 'rank2';
+							} else if (rank === 3) {
+								return 'rank3';
+							} else {
+								return 'default-color';
+							}
+						}
+					}
+				})
+		</script>
+	</body>
 
 </html>

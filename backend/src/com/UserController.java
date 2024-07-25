@@ -1,4 +1,4 @@
-package com.controller;
+package com;
 
 import com.po.ResultTo;
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -19,15 +19,16 @@ public class UserController {
     String driver = "com.mysql.cj.jdbc.Driver";
     String url = "jdbc:mysql://localhost:3306/test";
     String user = "root";
-    String pass = "admin";
+    String pass = "2212165";
     AbstractDaoImpl abstractDao = new AbstractDaoImpl(driver,url,user,pass);
 
     public ResultTo login(String username, String password){
-        Map user =  abstractDao.getMap("user","*","username=\""+username+"\" and password=\""+password+"\"");
+        Map user =  abstractDao.getMap("user","*","username= '"+username+"' and password='"+password+"'");
         ResultTo resultTo = new ResultTo();
 
+        System.out.println(user);
         if(user==null) {
-            user = abstractDao.getMap("user","*","email=\""+username+"\" and password=\""+password+"\"");
+            user = abstractDao.getMap("user","*","email= '"+username+"' and password='"+password+"'");
             resultTo.value = user;
             if(user == null){
                 resultTo.msg = "登陆失败";
@@ -41,6 +42,7 @@ public class UserController {
         }
         return resultTo;
     }
+
     public int register(String username, String password, String email){
 
         Map<String,Object> map = new HashMap<>();
@@ -67,6 +69,7 @@ public class UserController {
     public boolean removeUser(String username) {
         return abstractDao.delete("user","username='"+username+"'");
     }
+
     public int changeUserInfo(String username, String newname, String newemail, String password, String header) {
         Map user =  abstractDao.getMap("user","*","email='"+newemail+"'");
         if(user!=null && !user.get("user_username").equals(username)){

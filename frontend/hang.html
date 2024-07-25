@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>股海指南针</title>
+		<link rel="stylesheet" href="./css/base.css">
+		<link rel="stylesheet" href="./css/index.css">
+		<!-- <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.css" /> -->
+		<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- <script src="./bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script> -->
+		<script src="./js/echarts.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<!-- 头部 -->
+		<div class="header">
+			<div class="wrapped">
+				<div class="logo">
+					<h1><a href="#">股海指南针</a></h1>
+				</div>
+				<div class="nav">
+					<ul>
+						<li><a href="./index.html">首页</a></li>
+						<li><a href="./zixun.html">资讯中心</a></li>
+						<li class="active"><a href="./行情中心.html">行情中心</a></li>
+						<li><a href="./rank.html">数据中心</a></li>
+						<li><a href="./userinfo.html">个人中心</a></li>
+					</ul>
+				</div>
+				<div class="sear">
+					<input type="text" placeholder="输入关键词">
+					<span></span>
+				</div>
+				<div class="user">
+					<a href="#">
+						<img src="./uploads/user.png" alt="">
+						<span>12345</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="wrapped">
+			<div id="app">
+				<form class="form-horizontal" role="form">
+
+					<div class="form-group">
+						<label for="firstname">开始时间</label>
+						<div>
+							<input type="text" v-model="startDate" class="form-control" id="firstname"
+								placeholder="请输入开始时间">
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="firstname">结束时间</label>
+						<div>
+							<input type="text" v-model="endDate" class="form-control" id="firstname"
+								placeholder="请输入结束时间">
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="firstname">股票名称</label>
+						<div>
+							<input type="text" v-model="gpName" class="form-control" id="firstname"
+								placeholder="请输入股票名称">
+						</div>
+						<div class="bt">
+							<button @click="load" type="button" class="btn btn-default">查询</button>
+						</div>
+					</div>
+
+
+				</form>
+
+				<div class="arrow">
+					<button @click="pageminus()" class="left"><</button>
+					<button @click="pageadd()" class="right">></button>
+				</div>
+
+				<div id="main" style="width: 100%;height:880px;"></div>
+			</div>
+
+			<script type="text/javascript">
+				new Vue({
+					el: "#app",
+					data: {
+						option: {
+							xAxis: [{
+									gridIndex: 0, //网格布局的第0个
+									data: [] //x轴日期数据
+								},
+								{
+									gridIndex: 1, //网格布局的第1个
+									data: [] //x轴日期数据
+								},
+								{
+									gridIndex: 2, //网格布局的第2个
+									data: [], //x轴日期数据
+								},
+								{
+									gridIndex: 3, //网格布局的第3个
+									data: [], //x轴日期数据
+								}
+							],
+							yAxis: [{
+									scale: true,
+									gridIndex: 0
+								},
+								{
+									scale: true,
+									gridIndex: 1
+								},
+								{
+									scale: true,
+									gridIndex: 2
+								},
+								{
+									scale: true,
+									gridIndex: 3
+								}
+							],
+							grid: [{
+									left: 20,
+									right: 20,
+									top: 80,
+									height: 160,
+									containLabel: true,
+									backgroundColor: '#000'
+								},
+								{
+									left: 80,
+									right: 20,
+									height: 140,
+									top: 300
+								},
+								{
+									left: 40,
+									right: 20,
+									height: 140,
+									top: 500
+								},
+								{
+									left: 40,
+									right: 20,
+									height: 140,
+									top: 700,
+								}
+							],
+							legend: {
+								data: ['成交量', 'K线', '5日均线', '10日均线', '30日均线', 'DIF快线', 'DEA慢线', 'MACD柱形图', "涨幅", "振幅"]
+							},
+							tooltip: {
+								trigger: 'axis' //鼠标放到k线出有对话框效果
+							},
+							series: [{
+									name: "K线",
+									type: 'candlestick',
+									xAxisIndex: 0, //网格布局 第一个
+									yAxisIndex: 0, //网格布局 第一个
+									data: []
+								},
+								{
+									name: "成交量",
+									type: 'bar',
+									xAxisIndex: 1, //网格布局 第一个
+									yAxisIndex: 1, //网格布局 第一个
+									data: [], //成交量数据
+
+								},
+								{
+									name: "5日均线",
+									type: 'line',
+									xAxisIndex: 0, //网格布局 第一个
+									yAxisIndex: 0, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "10日均线",
+									type: 'line',
+									xAxisIndex: 0, //网格布局 第一个
+									yAxisIndex: 0, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "30日均线",
+									type: 'line',
+									xAxisIndex: 0, //网格布局 第一个
+									yAxisIndex: 0, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "DIF快线",
+									type: 'line',
+									xAxisIndex: 2, //网格布局 第一个
+									yAxisIndex: 2, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "DEA慢线",
+									type: 'line',
+									xAxisIndex: 2, //网格布局 第一个
+									yAxisIndex: 2, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "MACD柱形图",
+									type: 'bar',
+									xAxisIndex: 2, //网格布局 第一个
+									yAxisIndex: 2, //网格布局 第一个
+									data: [] //成交量数据
+								},
+								{
+									name: "涨幅",
+									type: 'bar',
+									xAxisIndex: 3, //网格布局 第一个
+									yAxisIndex: 3, //网格布局 第一个
+									data: [], //成交量数据
+									itemStyle: {
+										normal: {
+											color: function(params) {
+												// 根据涨幅数据决定颜色
+												var colorList;
+												if (params.value > 0) {
+													colorList = '#d75442'; // 涨幅大于0时，柱状图颜色为绿色
+												} else {
+													colorList = '#59b881'; // 涨幅小于等于0时，柱状图颜色为红色
+												}
+												return colorList;
+											}
+										}
+									}
+								},
+								{
+									name: "振幅",
+									type: 'line',
+									xAxisIndex: 3, //网格布局 第一个
+									yAxisIndex: 3, //网格布局 第一个
+									data: [], //成交量数据
+									lineStyle: {
+										normal: {
+											color: '#FFD700' // 折线颜色
+										}
+									}
+								}
+							]
+						},
+						startDate: '19990101', //19990101
+						endDate: '20240717', //20240717
+						gpName: '上海瀚讯',
+						pageNow: '1'
+					},
+					mounted() {
+						this.loadechars();
+					},
+					methods: {
+						loadechars() {
+							var chartDom = document.getElementById('main');
+							var myChart = echarts.init(chartDom);
+							let startDate = this.startDate
+							let endDate = this.endDate
+							let gpName = this.gpName
+							let pageNow = this.pageNow
+
+							axios.get(
+									`http://localhost:81/getStocks?startDate=${startDate}&endDate=${endDate}&pageNow=${pageNow}&gpName=${gpName}`
+									)
+								.then(response => {
+									if (response.data.length == 0) {
+										let tmp = parseInt(this.pageNow);
+										tmp -= 1;
+										this.pageNow = tmp.toString();
+										console.log(this.pageNow);
+										console.log(response.data);
+										alert("已到最新数据！");
+									} else {
+										// console.log(response.data);
+										let xdata = [] //x轴的日期数据 三个grid 
+										let klinedata = []
+										let chengjiaoliang = []
+										let opens = []; // 新增数组存储开盘价
+										let closes = []; // 新增数组存储收盘价
+										//均线数据赋值
+										let mv5 = []
+										let mv10 = []
+										let mv30 = []
+										let ema12 = []
+										let ema26 = []
+										let dif = []
+										let dea = []
+										let macd = []
+										let zhangfu = []
+										let zhenfu = []
+										let jsonarr = response.data
+										let i;
+										if (this.pageNow == '1') {
+											i = 0;
+										} else {
+											i = 30;
+										}
+										for (; i < jsonarr.length; i++) {
+											let json = jsonarr[i]
+											//想办法给均线（mv5）赋值
+											//计算5日均线
+											if (i >= 4 || this.pageNow != '1') {
+												let start = i - 4
+												let sum_close_5 = 0
+												for (let index = start; index <= i; index++) {
+
+													let jsonObject = jsonarr[index]
+													//收盘价
+													let closePrice = parseFloat(jsonObject.stock_closerice)
+													sum_close_5 += closePrice
+												}
+												mv5.push(sum_close_5 / 5)
+											} else {
+												mv5.push(null)
+											}
+
+											//计算10日均线
+											if (i >= 9 || this.pageNow != '1') {
+												let start = i - 9
+												let sum_close_10 = 0 //当前循环的这一天前面10个交易日的收盘价之和
+												for (let index = start; index <= i; index++) {
+													let jsonObject = jsonarr[index]
+													//收盘价
+													let closePrice = parseFloat(jsonObject.stock_closeprice)
+													sum_close_10 += closePrice
+												}
+												mv10.push(sum_close_10 / 10) //10日均线的值
+											} else {
+												mv10.push(null)
+											}
+
+											//计算30日均线
+											if (i >= 29 || this.pageNow != '1') {
+												let start = i - 29
+												let sum_close_30 = 0 //当前循环的这一天前面10个交易日的收盘价之和
+												for (let index = start; index <= i; index++) {
+													let jsonObject = jsonarr[index]
+													//收盘价
+													let closePrice = parseFloat(jsonObject.stock_closeprice)
+													sum_close_30 += closePrice
+												}
+												mv30.push(sum_close_30 / 30) //10日均线的值
+											} else {
+												mv30.push(null)
+											}
+
+											//计算EMA12
+											if (i == 0 || ((i == 30) && this.pageNow != '1')) {
+												let sum = 0
+												for (let j = i; j < i + 12; j++) {
+													sum += parseFloat(jsonarr[j].stock_closeprice)
+												}
+												ema12.push(sum / 12)
+											} else if (this.pageNow == '1') {
+												let tmp = (2 / 13) * parseFloat(jsonarr[i].stock_closeprice) + (1 - 2 /
+													13) * ema12[i - 1]
+												// console.log(ema12[i-1])
+												ema12.push(tmp)
+											} else {
+												let tmp = (2 / 13) * parseFloat(jsonarr[i].stock_closeprice) + (1 - 2 /
+													13) * ema12[i - 31]
+												// console.log(ema12[i-1])
+												ema12.push(tmp)
+											}
+
+											//计算EMA26
+											if (i == 0 || ((i == 30) && this.pageNow != '1')) {
+												let sum = 0
+												for (let j = i; j < i + 26; j++) {
+													sum += parseFloat(jsonarr[j].stock_closeprice)
+												}
+												ema26.push(sum / 26)
+											} else if (this.pageNow == '1') {
+												let tmp = (2 / 27) * parseFloat(jsonarr[i].stock_closeprice) + (1 - 2 /
+													27) * ema26[i - 1]
+												ema26.push(tmp)
+											} else {
+												let tmp = (2 / 27) * parseFloat(jsonarr[i].stock_closeprice) + (1 - 2 /
+													27) * ema26[i - 31]
+												// console.log(ema12[i-1])
+												ema26.push(tmp)
+											}
+
+											//计算DIF
+											if (this.pageNow == '1') {
+												dif.push(ema12[i] - ema26[i])
+											} else {
+												dif.push(ema12[i - 30] - ema26[i - 30])
+											}
+
+											//计算DEA
+											// 只有在dif数组长度达到9时才计算DEA的第一个值
+											if ((i >= 8 && this.pageNow=='1') || ((i >= 38) && this.pageNow !='1')) { // 因为数组是从0开始索引的，所以当i=8时，数组中有9个元素
+												let sum = 0;
+												if(this.pageNow =='1'){
+													for (let j = i - 8; j <= i; j++) {
+														sum += dif[j];
+													}
+												}
+												else{
+													for (let j = i - 8; j <= i; j++) {
+														sum += dif[j-30];
+													}
+												}
+												dea.push(sum / 9);
+												console.log("11*");
+											} else if (dea.length == 0) {
+												// 如果dea数组为空，则跳过计算或设置为0
+												dea.push(0);
+												console.log("333*");
+											} else {
+												
+												if (this.pageNow == '1') {
+													let tmp = (2 / 11) * dif[i] + (1 - 2 / 11) * dea[i - 1];
+													dea.push(tmp);
+												} else {
+													let tmp = (2 / 11) * dif[i - 30] + (1 - 2 / 11) * dea[i - 31];
+													dea.push(tmp);
+													console.log("22*");
+												}
+											}
+											
+
+											//计算MACD柱形图
+											if (this.pageNow == '1') {
+												macd.push(dif[i] - dea[i]);
+											} else {
+												macd.push(dif[i - 30] - dea[i - 30]);
+											}
+
+											//计算振幅
+											if ((i >= 1 && this.pageNow == '1') || (i >= 30 && this.pageNow != '1')) {
+
+												// 当日最高价
+												let hiPrice = parseFloat(jsonarr[i].stock_highprice);
+												// 当日最低价
+												let lowPrice = parseFloat(jsonarr[i].stock_lowprice);
+												// 前一日收盘价
+												let prevClosePrice = parseFloat(jsonarr[i - 1].stock_closeprice);
+
+												// 计算振幅
+												let amplitude = Math.abs(hiPrice - lowPrice) / prevClosePrice * 100;
+												zhenfu.push(amplitude);
+											} else {
+												zhenfu.push(0);
+											}
+
+
+
+											//给4个x轴时间线赋值
+											xdata.push(json.stock_yyyymmdd)
+											//给k线赋值
+											klinedata.push(
+												[
+													parseFloat(json.stock_openprice),
+													parseFloat(json.stock_closeprice),
+													parseFloat(json.stock_highprice),
+													parseFloat(json.stock_lowprice)
+												]
+											)
+											//给成交量赋值
+											chengjiaoliang.push(parseFloat(json.stock_volume))
+											// 新增代码，保存开盘价和收盘价
+											opens.push(parseFloat(json.stock_openprice));
+											closes.push(parseFloat(json.stock_closeprice));
+											//给涨幅赋值
+											zhangfu.push(parseFloat(json.stock_zhangfu))
+
+
+										}
+										this.option.xAxis[0].data = xdata
+										this.option.xAxis[1].data = xdata
+										this.option.xAxis[2].data = xdata
+										this.option.xAxis[3].data = xdata
+
+										this.option.series[0].data = klinedata
+										this.option.series[1].data = chengjiaoliang
+										// 添加成交量柱状图颜色设置
+										this.option.series[1].itemStyle = {
+											normal: {
+												color: function(params) {
+													// 使用opens和closes数组来决定颜色
+													var upColor = '#B22222'; // 上涨颜色
+													var downColor = '#008000'; // 下跌颜色
+													var flatColor = '#777777'; // 平盘颜色
+
+													if (closes[params.dataIndex] > opens[params.dataIndex]) {
+														return upColor; // 收盘价高于开盘价，上涨
+													} else if (closes[params.dataIndex] < opens[params
+															.dataIndex]) {
+														return downColor; // 收盘价低于开盘价，下跌
+													} else {
+														return flatColor; // 收盘价等于开盘价，平盘
+													}
+												}
+											}
+										};
+
+										this.option.series[2].data = mv5
+										this.option.series[3].data = mv10
+										this.option.series[4].data = mv30
+
+										this.option.series[5].data = dif
+										this.option.series[6].data = dea
+										this.option.series[7].data = macd
+										// 添加macd柱状图颜色设置
+										this.option.series[7].itemStyle = {
+											normal: {
+												color: function(params) {
+													// 使用opens和closes数组来决定颜色
+													var upColor = '#ef232a'; // 上涨颜色
+													var downColor = '#7CFC00'; // 下跌颜色 	 
+													if (macd[params.dataIndex] > 0) {
+														return upColor;
+													} else if (macd[params.dataIndex] < 0) {
+														return downColor;
+													}
+												}
+											}
+										};
+										this.option.series[8].data = zhangfu
+										this.option.series[9].data = zhenfu
+
+										console.log(ema12)
+										console.log(ema26)
+										console.log(dea)
+										console.log(dif)
+										console.log(macd)
+
+										myChart.setOption(this.option);
+									}
+
+								})
+						},
+						pageminus() {
+							console.log("---");
+							if (this.pageNow > 1) {
+								let tmp = parseInt(this.pageNow);
+								tmp -= 1;
+								this.pageNow = tmp.toString();
+								console.log(this.pageNow);
+								this.loadechars();
+							} else {
+								alert("已无更早的数据！");
+							}
+						},
+						pageadd() {
+							console.log("+++");
+							let tmp = parseInt(this.pageNow);
+							tmp += 1;
+							this.pageNow = tmp.toString();
+							console.log(this.pageNow);
+							this.loadechars();
+						},
+						load() {
+							this.pageNow = '1';
+							this.loadechars();
+						}
+					}
+				})
+			</script>
+		</div>
+
+
+		<!-- 底部 -->
+		<div class="bottom">
+			<div class="wrapped">
+				<div class="left">
+					<img src="./images/logo.png" alt="">
+					<p>“股海指南针”是一款集资讯、行情、数据于一体的股票投资助手。</p>
+					<input type="button" value="下载APP">
+				</div>
+				<div class="right">
+					<dl>
+						<dt>关于股海指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+					<dl>
+						<dt>关于股海指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+					<dl>
+						<dt>关于股和指南针</dt>
+						<dd>关于</dd>
+						<dd>工作机会</dd>
+						<dd>管理团队</dd>
+						<dd>客户服务</dd>
+						<dd>帮助</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+
+	</body>
+
+</html>

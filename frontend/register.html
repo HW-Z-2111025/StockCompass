@@ -52,17 +52,18 @@
 				justify-content: center;
 				/* 水平居中对齐 */
 			}
+
 			.user-avatar {
-			    height: 40px;
-			    width: 40px;
-			    border-radius: 50%;
-			    overflow: hidden;
-			    margin-left: 15px;
+				height: 40px;
+				width: 40px;
+				border-radius: 50%;
+				overflow: hidden;
+				margin-left: 15px;
 			}
-			
+
 			.user-avatar img {
-			    height: 100%;
-			    width: auto;
+				height: 100%;
+				width: auto;
 			}
 
 			#main {
@@ -71,18 +72,34 @@
 				justify-content: center;
 				/* 水平居中对齐 */
 			}
+			
+			#main h1{
+				font-weight: 600;
+			}
+			
+			#main .form-control{
+				width: 80%;
+			}
+			
+			#main .form-group label{
+				width: 100px;
+			}
 
 			#mainblock {
-				height: 70%;
+				height: 50%;
 				width: 60%;
 				padding: 10px;
 
-				background: rgba(255, 255, 255, 0.9);
-				border-radius: 15px;
+				/* background: rgba(255, 255, 255, 0.9); */
+				/* border-radius: 15px; */
 				padding: 20px;
-				box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+				/* box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); */
 				animation: fadeIn 1s ease-in-out;
 				text-align: center;
+			}
+			
+			.form-group{
+				padding: 10px 210px;
 			}
 		</style>
 	</head>
@@ -126,7 +143,10 @@
 								<input type="password" class="form-control" id="exampleInputPassword2"
 									v-model="confirmPassword" required>
 							</div>
-							<button type="submit" class="btn btn-primary btn-block">注册</button>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary btn-block" style="margin-left: 140px; width: 180px;border-radius: 0px;margin-top: 10px;">注册</button>
+								<button @click="navigateToLogin()" class="btn btn-primary btn-block" style="margin-left: 40px;width: 180px;border-radius: 0px;">登录</button>
+							</div>
 						</form>
 					</div>
 				</el-main>
@@ -143,6 +163,9 @@
 					confirmPassword: ''
 				},
 				methods: {
+					navigateToLogin() {
+						window.location.href = 'login.html'; // 修改为实际登录页面路径
+					},
 					register() {
 						if (this.password !== this.confirmPassword) {
 							this.$message({

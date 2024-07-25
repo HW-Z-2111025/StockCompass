@@ -5,6 +5,10 @@ import dao.AbstractDaoImpl;
 import org.MultipartFile;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,43 +31,101 @@ public class zixun {
     public List discuss(String date, Integer pagenow){
         Integer PAGESIZE = 100;
         Integer start = (pagenow-1)*PAGESIZE;
-        return abstractDao.getMaps("discuss","*","date="+date,start.toString(),PAGESIZE.toString());
+
+        return abstractDao.getMaps("discuss","*","date='"+date+"'",start.toString(),PAGESIZE.toString());
     }
 
     public List<Map<String, Object>> stockorder(String date) {
-        Integer TOP_SIZE = 10;
-//        String sql = "yyyymmdd = '"+ date +"' ORDER BY zhangfu DESC";
-        String sql = "yyyymmdd = '" + date + "' ORDER BY CONVERT(zhangfu, DECIMAL(10, 8)) DESC";
-        return abstractDao.getMaps("stock", "*", sql, "1", "10");
+        List<Map<String, Object>> maps = new ArrayList<>();
+        try {
+
+            Connection connection = DriverManager.getConnection(url, user, pass);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select zhangfu,gpname from stock where yyyymmdd="+date+" and yyyymmdd = '" + date + "' ORDER BY CONVERT(zhangfu, DECIMAL(10, 8)) DESC");
+            Integer i=0;
+            while (rs.next()){
+                Map<String,Object> map = new HashMap<>();
+                String gpName = rs.getString("gpname");
+                Float zhangfu = rs.getFloat("zhangfu");
+                if(zhangfu>100){continue;}
+                if(i>9){break;}
+                map.put("gpname",gpName);
+                map.put("zhangfu",zhangfu);
+                maps.add(map);
+                i++;
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return maps;
     }
 
     public List<Map<String, Object>> longhu(String date) {
-        //价格振幅=（当日最高价-当日最低价）/当日最低价*100％。
-        String sql1 ="yyyymmdd='"+date+"' and (convert(highprice,DECIMAL(6, 3))-convert(lowprice,DECIMAL(6, 3)))/convert(lowprice,DECIMAL(6, 3)) > 0.10 order by (convert(highprice,DECIMAL(6, 3))-convert(lowprice,DECIMAL(6, 3)))/convert(lowprice,DECIMAL(6, 3)) desc";
-        return abstractDao.getMaps("stock", "*", sql1, "1", "10");
+        List<Map<String, Object>> maps = new ArrayList<>();
+        try {
+
+            Connection connection = DriverManager.getConnection(url, user, pass);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select * from stock where yyyymmdd="+date+" and ((highprice-lowprice)/lowprice) > 0.1 and zhangfu>0 order by ((highprice-lowprice)/lowprice) desc limit 0,5");
+
+            while (rs.next()){
+                Map<String,Object> map = new HashMap<>();
+                String gpName = rs.getString("gpname");
+                Long volume = rs.getLong("volume");
+                Float zhangfu = rs.getFloat("zhangfu");
+                map.put("gpname",gpName);
+                map.put("volume",volume);
+                map.put("zhangfu",zhangfu);
+                maps.add(map);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return maps;
     }
 
-    public List<Map<String, Object>> longhu2(String date) {
+    public List<Map<String, Object>> longhu3(String date) {
         Integer d = Integer.parseInt(date)-2;
         String date2 = Integer.toString(d);
 
-        String sql2 ="yyyymmdd <='"+date+"'and yyyymmdd >='"+date2+"' group by gpname having sum(convert(zhangfu,decimal(10,8)))>20 and count(*)=3";
-        List<Map<String,Object>> tmp = abstractDao.getMaps("stock", "*", sql2);
-//        System.out.println(tmp);
-        List<String> gpNames = new ArrayList<>();
-        for (Map<String, Object> map : tmp) {
-            gpNames.add((String) map.get("stock_gpname"));
-        }
-//        String gps = String.join("','", gpNames);
-//        System.out.println(gps);
-//        String sql3 = "yyyymmdd ='"+date+"' and gpname in ('"+gps+"')";
+        List<Map<String, Object>> maps = new ArrayList<>();
+        try {
+            Connection connection = DriverManager.getConnection(url, user, pass);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select gpname from stock where yyyymmdd <='"+date+"' and yyyymmdd >='"+date2+"' group by gpname having sum(zhangfu)>20 and count(*)=3");
+            List<String> gps=new ArrayList<>();
+            while (rs.next()){
+                String gpName = rs.getString("gpname");
+                gps.add(gpName);
+            }
+            String gpss = "('"+String.join("','", gps)+"')";
+            Statement statement1= connection.createStatement();
+            ResultSet rs1 = statement1.executeQuery("select gpname,zhangfu,volume from stock where yyyymmdd ='"+date+"' and gpname in "+gpss);
 
-        List<Map<String,Object>> result =new ArrayList<>();
-        for(String t:gpNames){
-            String sqlt = "yyyymmdd ='"+date+"' and gpname = '"+t+"'";
-            List<Map<String, Object>> data = abstractDao.getMaps("stock", "*", sqlt);
-            result.addAll(data);
+            while(rs1.next()) {
+                Map<String,Object> map = new HashMap<>();
+                String gpName = rs1.getString("gpname");
+                Long volume = rs1.getLong("volume");
+                Float zhangfu = rs1.getFloat("zhangfu");
+                map.put("gpname", gpName);
+                map.put("volume", volume);
+                map.put("zhangfu", zhangfu);
+                maps.add(map);
+            }
+            rs.close();
+            rs1.close();
+            statement.close();
+            statement1.close();
+            connection.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return result;
+        return maps;
     }
 }

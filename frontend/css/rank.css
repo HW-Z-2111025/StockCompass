@@ -6,21 +6,21 @@
 	 /* 添加边框 */
 	border-bottom: 35px solid #f3f5f7; /* 边框宽度为2px，颜色为黑色，样式为实线 */   
 	border-top: 10px solid #f3f5f7;
-	padding: 10px;
+	padding: 20px 25px;
 	
 }  
 
   
 .leaderboard {  
-    width: 95%; 
+    width: 100%; 
     border-collapse: collapse;  
-    margin: 20px 15px;  
+    /* padding: 30px 25px;  */
 }  
   
 .leaderboard th,  
  .leaderboard td {  
     padding: 10px;  
-    text-align: left;  
+    text-align: right;  
     border-bottom: 1px solid #ddd;  
 } 
   
@@ -38,7 +38,7 @@
 .leaderboard1 th,  
  .leaderboard1 td {  
     padding: 10px;  
-    text-align: left;  
+    text-align: right;  
     border-bottom: 1px solid #ddd;  
 } 
   
@@ -52,18 +52,44 @@
     background-color: #f9f9f9;  
 }  
   
+ .leaderboard tr td:nth-child(1),
+ .leaderboard1 tbody tr td:nth-child(1){
+	 font-size: 16px;
+	 font-weight: bold;
+	 color: #797c86;
+ }
  
+ #app2 tr:nth-child(1) td:nth-child(1),
+ #app3 tr:nth-child(1) td:nth-child(1){
+	 color:  #ee2500;
+ }
+ 
+ #app2 tr:nth-child(2) td:nth-child(1),
+#app3 tr:nth-child(2) td:nth-child(1){
+ 	 color:  #ff6b00;
+ }
+ 
+#app2 tr:nth-child(3) td:nth-child(1),
+ #app3 tr:nth-child(3) td:nth-child(1){
+ 	 color:  #ffa100;
+ }
 
+ #app .leaderboard1 tbody tr .rank1 { color: #ee2500; }
+ #app .leaderboard1 tbody tr  .rank2 { color: #ff6b00; }
+ #app .leaderboard1 tbody tr .rank3 { color: #ffa100; }
+ 
 
 .smalltitle{
 	border-bottom: 1px solid #ddd;  
 }
 .smalltitle h2.icon-lhb,
 .smalltitle .more {  
+	line-height: 2.5;
     display: inline-block; /* 使得h2和a标签并排显示 */  
     vertical-align: middle; /* 垂直居中对齐，可根据需要调整 */  
 }
 .smalltitle .more {  
+	padding-top: 10px;
 	float: right;
     /* 左侧添加一些间距 */  
 }
